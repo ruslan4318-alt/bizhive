@@ -1,0 +1,131 @@
+.section {
+    padding: var(--space-24) 0;
+    background-color: var(--color-white);
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: var(--space-16);
+}
+
+.title {
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: var(--color-navy);
+    margin-bottom: var(--space-4);
+}
+
+.subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+}
+
+.card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    border-color: var(--color-navy);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.cardIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background-color: var(--color-bg-light);
+    border-radius: var(--radius-lg);
+    color: var(--color-navy);
+    margin-bottom: var(--space-6);
+}
+
+.cardTitle {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-navy);
+    margin-bottom: var(--space-4);
+}
+
+.cardFeatures {
+    flex: 1;
+    margin-bottom: var(--space-6);
+}
+
+.cardFeatures li {
+    position: relative;
+    padding-left: var(--space-5);
+    margin-bottom: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+.cardFeatures li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-yellow);
+    border-radius: 50%;
+}
+
+.cardHighlight {
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+}
+
+.highlightNumber {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    color: var(--color-yellow);
+    line-height: 1;
+}
+
+.highlightLabel {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: var(--space-6);
+    }
+}

@@ -1,0 +1,134 @@
+.footer {
+    background-color: var(--color-navy);
+    color: var(--color-white);
+    padding: var(--space-16) 0 var(--space-8);
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: var(--space-12);
+    margin-bottom: var(--space-12);
+}
+
+.brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.logo {
+    display: inline-block;
+}
+
+.logoText {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--color-white);
+    letter-spacing: 0.05em;
+}
+
+.tagline {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--text-sm);
+    margin: 0;
+}
+
+.social {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.socialLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--color-white);
+    transition: all var(--transition-base);
+}
+
+.socialLink:hover {
+    background-color: var(--color-yellow);
+    color: var(--color-navy);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.columnTitle {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-white);
+    margin-bottom: var(--space-2);
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.nav a,
+.contact a {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--text-sm);
+    transition: color var(--transition-fast);
+}
+
+.nav a:hover,
+.contact a:hover {
+    color: var(--color-yellow);
+}
+
+.contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.bottom {
+    padding-top: var(--space-8);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--text-sm);
+    margin: 0;
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-8);
+    }
+
+    .brand {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brand {
+        grid-column: span 1;
+    }
+}
