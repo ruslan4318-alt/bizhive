@@ -274,7 +274,7 @@ export default function Performance() {
                             </svg>
                             View Full Report
                         </button>
-                        <Link href="/case-studies" className={styles.viewAllLink}>
+                        <Link href="/clients" className={styles.viewAllLink}>
                             View All Case Studies
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M5 12h14M12 5l7 7-7 7" />

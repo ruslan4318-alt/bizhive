@@ -303,8 +303,8 @@ export default function Home() {
             
             <AnimatedSection className="text-center mt-10">
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                <Link href="/case-studies" className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-3 rounded-xl font-semibold text-sm transition-all">
-                  View All Case Studies <Icons.Arrow />
+                <Link href="/clients" className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-3 rounded-xl font-semibold text-sm transition-all">
+                  View All Success Stories <Icons.Arrow />
                 </Link>
               </motion.div>
             </AnimatedSection>

@@ -233,6 +233,18 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                             </div>
                         ))}
                     </div>
+                    
+                    <div className="flex justify-center mt-10">
+                        <Link 
+                            href="/clients" 
+                            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 px-8 py-3 rounded-full font-bold text-base transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+                        >
+                            View Success Stories
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                    </div>
                 </div>
             </section>
 
