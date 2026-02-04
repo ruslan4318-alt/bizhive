@@ -63,7 +63,7 @@ const clients = [
         name: 'Brand H',
         category: 'Home & Living',
         platform: 'Shopee',
-        description: 'Home brand with comprehensive store optimization.',
+        description: 'Home brand with comprehensive shop optimization.',
         result: '+90% Revenue',
     },
 ];

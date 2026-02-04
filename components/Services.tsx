@@ -2,8 +2,8 @@ import styles from './Services.module.css';
 
 const services = [
     {
-        id: 'store-optimization',
-        title: 'Store Optimization',
+        id: 'shop-optimization',
+        title: 'Shop Optimization',
         features: [
             'Website analysis',
             'Ads optimization',

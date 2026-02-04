@@ -114,8 +114,8 @@ export default function Home() {
     <>
       <div className="relative w-full overflow-x-hidden">
         {/* Hero Section */}
-        <section className="relative pt-16 pb-20 px-6 z-10">
-          {/* Background - fixed positioning */}
+        <section className="relative pt-24 pb-16 px-6 z-10">
+          {/* Background */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <Floating distance={20} duration={8}>
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-blue-50 to-transparent rounded-full blur-3xl opacity-60 translate-x-1/3 -translate-y-1/4"></div>
@@ -125,92 +125,71 @@ export default function Home() {
             </Floating>
           </div>
           
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
-            <div className="flex flex-col gap-6">
-              <AnimatedSection delay={0}>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-100 w-fit">
-                  <motion.span 
-                    className="w-2 h-2 rounded-full bg-amber-500"
-                    animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                  <span className="text-xs font-semibold text-slate-700 tracking-wide uppercase">Accepting New Partners</span>
-                </div>
-              </AnimatedSection>
-              
-              <AnimatedSection variants={slideInLeft} delay={0.1}>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-slate-900">
-                  Marketing Agency for{' '}
-                  <span className="text-amber-500">E-Commerce Growth</span>
-                </h1>
-              </AnimatedSection>
-              
-              <AnimatedSection delay={0.2}>
-                <p className="text-base lg:text-lg text-slate-500 max-w-lg leading-relaxed">
-                  We help brands scale through data-driven strategies, premium content production, and live streaming excellence on Shopee, TikTok Shop, and more.
-                </p>
-              </AnimatedSection>
-
-              
-              <AnimatedSection delay={0.4}>
-                <div className="flex items-center gap-4 pt-4 text-slate-400">
-                  <p className="text-sm font-medium">Trusted by leading platforms</p>
-                  <div className="h-px flex-1 bg-slate-200"></div>
-                </div>
-              </AnimatedSection>
-            </div>
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <AnimatedSection delay={0.1}>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-[#0B1221] mb-6">
+                Marketing Agency for<br />
+                <span className="relative inline-block text-[#152C5B]">
+                  E-Commerce Growth
+                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 8C50 3 150 2 298 8" stroke="#152C5B" strokeWidth="4" strokeLinecap="round"/>
+                  </svg>
+                </span>
+              </h1>
+            </AnimatedSection>
             
-            <AnimatedSection variants={slideInRight} delay={0.2}>
-              <div className="relative">
-                <motion.div 
-                  className="aspect-[4/3] rounded-2xl overflow-hidden border border-slate-100 shadow-xl bg-white relative"
-                  whileHover={{ scale: 1.01 }}
-                  transition={{ type: 'spring', stiffness: 300 }}
-                >
-                  <div className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-                    <span className="text-3xl font-bold text-slate-200">BIZHIVE</span>
-                  </div>
-                  <motion.div 
-                    className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-5 rounded-xl flex items-center justify-between shadow-lg border border-slate-100"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.5 }}
-                  >
-                    <div>
-                      <p className="text-xs text-slate-400 font-medium mb-1">Cumulative Revenue</p>
-                      <p className="text-xl text-slate-900 flex items-center gap-2">
-                        <span className="font-light">Rp</span>
-                        <span className="font-semibold tracking-tight"><CountUp target={14.8} suffix="M+" duration={2} /></span>
-                        <span className="text-emerald-500 text-xs font-medium bg-emerald-50 px-2 py-0.5 rounded-full">↑ Growing</span>
-                      </p>
-                    </div>
-                    <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
-                      <Icons.TrendUp />
-                    </div>
-                  </motion.div>
-                </motion.div>
-              </div>
+            <AnimatedSection delay={0.2}>
+              <p className="text-base lg:text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
+                We help brands scale through data-driven strategies, premium content production, and live streaming excellence on Shopee, TikTok Shop, and more.
+              </p>
             </AnimatedSection>
           </div>
         </section>
 
         {/* Platform Partners */}
-        <section className="py-8 border-y border-slate-100 bg-slate-50/50">
-          <div className="max-w-7xl mx-auto px-6">
-            <StaggerContainer className="flex flex-wrap justify-center items-center gap-8 lg:gap-16">
+        <section className="py-8 bg-slate-50 border-y border-slate-200">
+          <div className="max-w-6xl mx-auto px-6">
+            <StaggerContainer className="flex flex-wrap justify-center items-center md:divide-x md:divide-slate-200/60">
               {[
-                { Icon: Icons.Check, label: 'Official MCN', color: 'text-emerald-500' },
-                { Icon: Icons.TikTok, label: 'TikTok Partner', color: 'text-slate-800' },
-                { Icon: Icons.Shopee, label: 'Shopee Preferred', color: 'text-orange-500' },
-                { Icon: Icons.Building, label: 'Lazada Certified', color: 'text-blue-600' }
+                { 
+                  icon: (
+                    <svg className="w-5 h-5 translate-y-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  ), 
+                  label: 'Official MCN',
+                  color: 'text-[#F59E0B]'
+                },
+                { 
+                  icon: (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                    </svg>
+                  ), 
+                  label: 'TikTok Partner',
+                  color: 'text-slate-800'
+                },
+                { 
+                  icon: (
+                    <svg className="w-5 h-5 translate-y-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                  ), 
+                  label: 'Shopee Preferred',
+                  color: 'text-[#F97316]'
+                },
               ].map((partner, i) => (
                 <StaggerItem key={i}>
                   <motion.div 
-                    className="flex items-center gap-2 text-sm lg:text-base font-semibold text-slate-700"
-                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center gap-3 px-6 md:px-12 py-2 group cursor-default"
+                    whileHover={{ scale: 1.02 }}
                   >
-                    <span className={partner.color}><partner.Icon /></span>
-                    {partner.label}
+                    <div className={`${partner.color} opacity-90 group-hover:opacity-100 transition-opacity`}>
+                      {partner.icon}
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-slate-500 group-hover:text-slate-800 transition-colors">
+                      {partner.label}
+                    </span>
                   </motion.div>
                 </StaggerItem>
               ))}
@@ -229,7 +208,7 @@ export default function Home() {
             
             <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
               {[
-                { title: 'Store Optimization', desc: 'Maximize your store visibility and conversion rates with data-driven optimization strategies.', Icon: Icons.Store, href: '/services/store-optimization' },
+                { title: 'Shop Optimization', desc: 'Maximize your store visibility and conversion rates with data-driven optimization strategies.', Icon: Icons.Store, href: '/services/shop-optimization' },
                 { title: 'Content Production', desc: 'High-quality product photography, videos, and creative content that sells.', Icon: Icons.Video, href: '/services/content-production' },
                 { title: 'Live Streaming', desc: 'Professional live commerce execution with trained hosts and optimized setups.', Icon: Icons.Live, href: '/services/live-streaming' },
                 { title: 'Affiliate & KOL', desc: 'Connect with 5,000+ managed KOLs and affiliates for maximum reach.', Icon: Icons.Users, href: '/services/affiliate-kol' }
@@ -461,10 +440,10 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4">Partner With BIZHIVE</h3>
                 <p className="text-slate-400 mb-4 leading-relaxed">
-                  Ready to scale your e-commerce business? Partner with us for comprehensive growth solutions including store optimization, content production, live streaming, and KOL management.
+                  Ready to scale your e-commerce business? Partner with us for comprehensive growth solutions including shop optimization, content production, live streaming, and KOL management.
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 mb-6">
-                  {['Store Optimization', 'Content Production', 'Live Streaming', 'Affiliate & KOL'].map((service, i) => (
+                  {['Shop Optimization', 'Content Production', 'Live Streaming', 'Affiliate & KOL'].map((service, i) => (
                     <span key={i} className="px-3 py-1 bg-amber-500/10 text-amber-400 text-xs font-medium rounded-full border border-amber-500/20">
                       {service}
                     </span>
@@ -499,7 +478,7 @@ export default function Home() {
                 </h3>
                 <p className="text-slate-400 mb-6 leading-relaxed">
                   Learn the secrets of successful e-commerce from our expert team. From live streaming techniques 
-                  to store optimization, we share everything in our free training sessions.
+                  to shop optimization, we share everything in our free training sessions.
                 </p>
                 
                 <ul className="space-y-3 mb-8">
@@ -549,7 +528,7 @@ export default function Home() {
                     
                     <div className="space-y-4">
                       {[
-                        { topic: 'Store Optimization Mastery', date: 'Week 1' },
+                        { topic: 'Shop Optimization Mastery', date: 'Week 1' },
                         { topic: 'Content Production Excellence', date: 'Week 2' },
                         { topic: 'Live Streaming Success', date: 'Week 3' },
                         { topic: 'Affiliate & KOL Strategy', date: 'Week 4' }

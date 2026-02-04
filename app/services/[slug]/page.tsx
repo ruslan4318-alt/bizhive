@@ -11,11 +11,11 @@ const servicesData: Record<string, {
     process: { step: number; title: string; description: string }[];
     results: { number: string; label: string }[];
 }> = {
-    'store-optimization': {
-        title: 'Store Optimization',
+    'shop-optimization': {
+        title: 'Shop Optimization',
         tagline: 'Maximize your e-commerce store performance with data-driven strategies',
         category: 'Performance',
-        description: 'Our Store Optimization service helps you unlock the full potential of your e-commerce store. We analyze every aspect of your online presence—from product listings to ad campaigns—and implement proven strategies to boost visibility, conversion rates, and overall sales performance.',
+        description: 'Our Shop Optimization service helps you unlock the full potential of your e-commerce store. We analyze every aspect of your online presence—from product listings to ad campaigns—and implement proven strategies to boost visibility, conversion rates, and overall sales performance.',
         features: [
             {
                 title: 'Website Analysis & Audit',

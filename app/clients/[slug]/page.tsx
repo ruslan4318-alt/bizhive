@@ -29,7 +29,7 @@ const clientsData: Record<string, {
             { metric: 'Visitors', before: '977,958', after: '1,288,169', growth: '+31.7%' },
             { metric: 'Orders', before: '37,569', after: '45,932', growth: '+22.3%' },
         ],
-        services: ['Store Optimization', 'Ads Management', 'Campaign Marketing'],
+        services: ['Shop Optimization', 'Ads Management', 'Campaign Marketing'],
     },
     'brand-fashion-b': {
         name: 'Brand B',
@@ -105,7 +105,7 @@ const clientsData: Record<string, {
             { metric: 'Conversion Rate', before: '1.2%', after: '3.5%', growth: '+192%' },
             { metric: 'Revenue', before: 'Rp 25M', after: 'Rp 70M', growth: '+180%' },
         ],
-        services: ['Store Optimization', 'Ads Management'],
+        services: ['Shop Optimization', 'Ads Management'],
     },
     'brand-food-f': {
         name: 'Brand F',
@@ -124,7 +124,7 @@ const clientsData: Record<string, {
             { metric: 'Campaign Sales', before: 'Rp 30M', after: 'Rp 150M', growth: '+400%' },
             { metric: 'New Customers', before: '500', after: '2,500', growth: '+400%' },
         ],
-        services: ['Store Optimization', 'Campaign Marketing'],
+        services: ['Shop Optimization', 'Campaign Marketing'],
     },
     'brand-tech-g': {
         name: 'Brand G',
@@ -162,7 +162,7 @@ const clientsData: Record<string, {
             { metric: 'Average Cart', before: 'Rp 200K', after: 'Rp 350K', growth: '+75%' },
             { metric: 'Return Rate', before: '8%', after: '3%', growth: '-63%' },
         ],
-        services: ['Store Optimization', 'Content Production'],
+        services: ['Shop Optimization', 'Content Production'],
     },
 };
 

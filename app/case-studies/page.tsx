@@ -4,13 +4,13 @@ import styles from './caseStudies.module.css';
 const caseStudies = [
     {
         slug: 'brand-a-shopee-optimization',
-        title: 'Shopee Store Optimization',
+        title: 'Shopee Shop Optimization',
         brand: 'Brand A',
         category: 'Cosmetic',
         platform: 'Shopee',
         duration: '1 Month',
         highlight: '+24.2% Sales Growth',
-        description: 'Comprehensive store optimization resulting in significant sales and traffic increase.',
+        description: 'Comprehensive shop optimization resulting in significant sales and traffic increase.',
         results: [
             { label: 'Sales', value: '+24.2%' },
             { label: 'Visitors', value: '+31.7%' },

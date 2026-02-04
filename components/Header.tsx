@@ -9,7 +9,6 @@ export default function Header() {
 
     const navLinks = [
         { href: '/services', label: 'Services' },
-        { href: '/studios', label: 'Studios' },
         { href: '/clients', label: 'Clients' },
         { href: '/news', label: 'News' },
     ];
@@ -30,37 +29,39 @@ export default function Header() {
                         <span className="text-xl font-bold tracking-tight text-slate-900">BIZHIVE</span>
                     </Link>
                     
-                    <nav className={`hidden md:flex items-center gap-8`}>
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="text-sm font-medium text-slate-600 hover:text-amber-500 transition-colors"
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </nav>
-                    
-                    <div className="flex items-center gap-4">
-                        <a
-                            href="https://wa.me/6281250493122"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-amber-500/20"
-                        >
-                            Contact Us
-                        </a>
+                    <div className="flex items-center gap-8">
+                        <nav className={`hidden md:flex items-center gap-8`}>
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className="text-sm font-medium text-slate-600 hover:text-amber-500 transition-colors"
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </nav>
                         
-                        <button
-                            className="md:hidden flex flex-col gap-1.5 p-2"
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            aria-label="Toggle menu"
-                        >
-                            <span className={`w-6 h-0.5 bg-slate-900 transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-                            <span className={`w-6 h-0.5 bg-slate-900 transition-all ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
-                            <span className={`w-6 h-0.5 bg-slate-900 transition-all ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
-                        </button>
+                        <div className="flex items-center gap-4">
+                            <a
+                                href="https://wa.me/6281250493122"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-amber-500/20"
+                            >
+                                Contact Us
+                            </a>
+                            
+                            <button
+                                className="md:hidden flex flex-col gap-1.5 p-2"
+                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                aria-label="Toggle menu"
+                            >
+                                <span className={`w-6 h-0.5 bg-slate-900 transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+                                <span className={`w-6 h-0.5 bg-slate-900 transition-all ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
+                                <span className={`w-6 h-0.5 bg-slate-900 transition-all ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 

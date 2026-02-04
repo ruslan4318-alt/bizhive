@@ -145,7 +145,7 @@ export default function NewServicePage() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900"
-              placeholder="e.g. Store Optimization"
+              placeholder="e.g. Shop Optimization"
               required
             />
           </div>
@@ -158,7 +158,7 @@ export default function NewServicePage() {
               value={formData.slug}
               onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-500"
-              placeholder="store-optimization"
+              placeholder="shop-optimization"
             />
           </div>
 

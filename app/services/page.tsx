@@ -3,8 +3,8 @@ import styles from './services.module.css';
 
 const services = [
     {
-        slug: 'store-optimization',
-        title: 'Store Optimization',
+        slug: 'shop-optimization',
+        title: 'Shop Optimization',
         category: 'Performance',
         shortDescription: 'Maximize your e-commerce store performance with data-driven optimization strategies.',
         features: [
