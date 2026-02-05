@@ -249,27 +249,29 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </section>
 
             {/* CTA */}
-            <section className={styles.ctaSection}>
-                <div className={styles.container}>
-                    <h2 className={styles.ctaTitle}>Ready to Get Started?</h2>
-                    <p className={styles.ctaDescription}>
-                        Let&apos;s discuss how {service.title} can help grow your business.
-                    </p>
-                    <div className={styles.ctaButtons}>
-                        <a
-                            href="https://wa.me/6281250493122"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.btnPrimary}
-                        >
-                            Contact via WhatsApp
-                        </a>
-                        <Link href="/services" className={styles.btnSecondary}>
-                            View All Services
-                        </Link>
+            {slug !== 'shop-optimization' && (
+                <section className={styles.ctaSection}>
+                    <div className={styles.container}>
+                        <h2 className={styles.ctaTitle}>Ready to Get Started?</h2>
+                        <p className={styles.ctaDescription}>
+                            Let&apos;s discuss how {service.title} can help grow your business.
+                        </p>
+                        <div className={styles.ctaButtons}>
+                            <a
+                                href="https://wa.me/6281250493122"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={styles.btnPrimary}
+                            >
+                                Contact via WhatsApp
+                            </a>
+                            <Link href="/services" className={styles.btnSecondary}>
+                                View All Services
+                            </Link>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
         </main>
     );
 }
