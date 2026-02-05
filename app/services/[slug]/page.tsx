@@ -182,7 +182,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </section>
 
             {/* Overview */}
-            <section className={styles.section}>
+            <section className={`${styles.section} ${styles.sectionLight}`}>
                 <div className={styles.container}>
                     <h2 className={styles.sectionTitle}>What We Offer</h2>
                     <p className={styles.description}>{service.description}</p>
@@ -206,7 +206,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </section>
 
             {/* Process */}
-            <section className={styles.section}>
+            <section className={`${styles.section} ${styles.sectionLight}`}>
                 <div className={styles.container}>
                     <h2 className={styles.sectionTitle}>How It Works</h2>
                     <div className={styles.processGrid}>

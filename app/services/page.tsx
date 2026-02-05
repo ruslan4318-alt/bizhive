@@ -102,7 +102,7 @@ export default function ServicesPage() {
                 </div>
             </section>
 
-            <section className={styles.servicesSection}>
+            <section className={styles.servicesSectionLight}>
                 <div className={styles.container}>
                     <div className={styles.grid}>
                         {services.map((service) => (

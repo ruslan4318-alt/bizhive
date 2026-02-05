@@ -215,3 +215,51 @@
 .card:hover .cardLink {
     gap: 12px;
 }
+
+/* Light Mode Support */
+.servicesSectionLight {
+    padding: 80px 0 120px;
+    background: #ffffff;
+    position: relative;
+}
+
+.servicesSectionLight .card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.servicesSectionLight .cardTitle {
+    color: #0f172a;
+}
+
+.servicesSectionLight .cardDescription {
+    color: #475569;
+}
+
+.servicesSectionLight .cardFeatures li {
+    color: #1e293b;
+}
+
+.servicesSectionLight .cardCategory {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.servicesSectionLight .cardIcon {
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.1), rgba(255, 170, 0, 0.05));
+    border: 1px solid rgba(255, 170, 0, 0.1);
+}
+
+.servicesSectionLight .card:hover {
+    border-color: rgba(255, 170, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.servicesSectionLight .cardHighlight {
+    border-top: 1px solid #e2e8f0;
+}
+
+.servicesSectionLight .highlightLabel {
+    color: #64748b;
+}

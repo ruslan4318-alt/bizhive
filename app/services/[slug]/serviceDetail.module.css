@@ -314,3 +314,43 @@
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.5);
 }
+
+/* Light Section support */
+.sectionLight {
+    background: #ffffff;
+    padding: 80px 0;
+}
+
+.sectionLight .sectionTitle {
+    color: #0f172a;
+}
+
+.sectionLight .description {
+    color: #475569;
+}
+
+.sectionLight .stepTitle {
+    color: #0f172a;
+}
+
+.sectionLight .stepDescription {
+    color: #475569;
+}
+
+.sectionLight .featureCard {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.sectionLight .featureTitle {
+    color: #0f172a;
+}
+
+.sectionLight .featureDescription {
+    color: #475569;
+}
+
+.sectionLight .featureCard:hover {
+    border-color: rgba(255, 170, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
