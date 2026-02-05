@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import styles from './serviceDetail.module.css';
+import { AnimatedSection, StaggerContainer, StaggerItem, CountUp, fadeInUp, scaleIn } from '@/components/animations';
 
 const servicesData: Record<string, {
     title: string;
@@ -9,7 +12,7 @@ const servicesData: Record<string, {
     description: string;
     features: { title: string; description: string }[];
     process: { step: number; title: string; description: string }[];
-    results: { number: string; label: string }[];
+    results: { number: string; label: string; suffix?: string }[];
 }> = {
     'shop-optimization': {
         title: 'Shop Optimization',
@@ -41,9 +44,9 @@ const servicesData: Record<string, {
             { step: 4, title: 'Monitor', description: 'Track performance and iterate for growth' },
         ],
         results: [
-            { number: '24%', label: 'Average Sales Increase' },
-            { number: '31%', label: 'Traffic Growth' },
-            { number: '50+', label: 'Brands Optimized' },
+            { number: '24', label: 'Average Sales Increase', suffix: '%' },
+            { number: '31', label: 'Traffic Growth', suffix: '%' },
+            { number: '50', label: 'Brands Optimized', suffix: '+' },
         ],
     },
     'content-production': {
@@ -76,9 +79,9 @@ const servicesData: Record<string, {
             { step: 4, title: 'Analyze', description: 'Track performance and refine strategy' },
         ],
         results: [
-            { number: '5,000+', label: 'Videos Produced' },
-            { number: '10M+', label: 'Total Views' },
-            { number: '3x', label: 'Average Engagement Lift' },
+            { number: '5000', label: 'Videos Produced', suffix: '+' },
+            { number: '10', label: 'Total Views', suffix: 'M+' },
+            { number: '3', label: 'Average Engagement Lift', suffix: 'x' },
         ],
     },
     'affiliate-kol': {
@@ -111,9 +114,9 @@ const servicesData: Record<string, {
             { step: 4, title: 'Report', description: 'Analyze results and optimize' },
         ],
         results: [
-            { number: '5,000+', label: 'Managed KOLs' },
-            { number: '1,000+', label: 'Creator Portfolio' },
-            { number: '150%', label: 'Average ROAS' },
+            { number: '5000', label: 'Managed KOLs', suffix: '+' },
+            { number: '1000', label: 'Creator Portfolio', suffix: '+' },
+            { number: '150', label: 'Average ROAS', suffix: '%' },
         ],
     },
     'live-streaming': {
@@ -146,19 +149,16 @@ const servicesData: Record<string, {
             { step: 4, title: 'Optimize', description: 'Analyze and improve performance' },
         ],
         results: [
-            { number: '12+', label: 'Studio Facilities' },
-            { number: '500+', label: 'Live Sessions' },
-            { number: '5x', label: 'Conversion vs Static' },
+            { number: '12', label: 'Studio Facilities', suffix: '+' },
+            { number: '500', label: 'Live Sessions', suffix: '+' },
+            { number: '5', label: 'Conversion vs Static', suffix: 'x' },
         ],
     },
 };
 
-export async function generateStaticParams() {
-    return Object.keys(servicesData).map((slug) => ({ slug }));
-}
-
-export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
+export default function ServiceDetailPage() {
+    const params = useParams();
+    const slug = params.slug as string;
     const service = servicesData[slug];
 
     if (!service) {
@@ -170,71 +170,85 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             {/* Hero */}
             <section className={styles.hero}>
                 <div className={styles.container}>
-                    <nav className={styles.breadcrumb}>
-                        <Link href="/services">Services</Link>
-                        <span>/</span>
-                        <span>{service.title}</span>
-                    </nav>
-                    <span className={styles.badge}>{service.category}</span>
-                    <h1 className={styles.title}>{service.title}</h1>
-                    <p className={styles.tagline}>{service.tagline}</p>
+                    <AnimatedSection variants={fadeInUp}>
+                        <nav className={styles.breadcrumb}>
+                            <Link href="/services">Services</Link>
+                            <span>/</span>
+                            <span>{service.title}</span>
+                        </nav>
+                        <span className={styles.badge}>{service.category}</span>
+                        <h1 className={styles.title}>{service.title}</h1>
+                        <p className={styles.tagline}>{service.tagline}</p>
+                    </AnimatedSection>
                 </div>
             </section>
 
             {/* Overview */}
             <section className={`${styles.section} ${styles.sectionLight}`}>
                 <div className={styles.container}>
-                    <h2 className={styles.sectionTitle}>What We Offer</h2>
-                    <p className={styles.description}>{service.description}</p>
+                    <AnimatedSection delay={0.2}>
+                        <h2 className={styles.sectionTitle}>What We Offer</h2>
+                        <p className={styles.description}>{service.description}</p>
+                    </AnimatedSection>
                 </div>
             </section>
 
             {/* Features */}
             <section className={styles.section}>
                 <div className={styles.container}>
-                    <h2 className={styles.sectionTitle}>Key Features</h2>
-                    <div className={styles.featuresGrid}>
+                    <AnimatedSection>
+                        <h2 className={styles.sectionTitle}>Key Features</h2>
+                    </AnimatedSection>
+                    <StaggerContainer className={styles.featuresGrid}>
                         {service.features.map((feature, index) => (
-                            <div key={index} className={styles.featureCard}>
+                            <StaggerItem key={index} className={styles.featureCard}>
                                 <div className={styles.featureNumber}>{String(index + 1).padStart(2, '0')}</div>
                                 <h3 className={styles.featureTitle}>{feature.title}</h3>
                                 <p className={styles.featureDescription}>{feature.description}</p>
-                            </div>
+                            </StaggerItem>
                         ))}
-                    </div>
+                    </StaggerContainer>
                 </div>
             </section>
 
             {/* Process */}
             <section className={`${styles.section} ${styles.sectionLight}`}>
                 <div className={styles.container}>
-                    <h2 className={styles.sectionTitle}>How It Works</h2>
-                    <div className={styles.processGrid}>
+                    <AnimatedSection>
+                        <h2 className={styles.sectionTitle}>How It Works</h2>
+                    </AnimatedSection>
+                    <StaggerContainer className={styles.processGrid}>
                         {service.process.map((step) => (
-                            <div key={step.step} className={styles.processStep}>
+                            <StaggerItem key={step.step} className={styles.processStep}>
                                 <div className={styles.stepNumber}>{step.step}</div>
                                 <h3 className={styles.stepTitle}>{step.title}</h3>
                                 <p className={styles.stepDescription}>{step.description}</p>
-                            </div>
+                            </StaggerItem>
                         ))}
-                    </div>
+                    </StaggerContainer>
                 </div>
             </section>
 
             {/* Results */}
             <section className={styles.section}>
                 <div className={styles.container}>
-                    <h2 className={styles.sectionTitle}>Expected Results</h2>
-                    <div className={styles.resultsGrid}>
+                    <AnimatedSection>
+                        <h2 className={styles.sectionTitle}>Expected Results</h2>
+                    </AnimatedSection>
+                    <StaggerContainer className={styles.resultsGrid}>
                         {service.results.map((result, index) => (
-                            <div key={index} className={styles.resultCard}>
-                                <span className={styles.resultNumber}>{result.number}</span>
+                            <StaggerItem key={index} className={styles.resultCard}>
+                                <CountUp 
+                                    target={parseInt(result.number)} 
+                                    suffix={(result as any).suffix || ''} 
+                                    className={styles.resultNumber} 
+                                />
                                 <span className={styles.resultLabel}>{result.label}</span>
-                            </div>
+                            </StaggerItem>
                         ))}
-                    </div>
+                    </StaggerContainer>
                     
-                    <div className="flex justify-center mt-10">
+                    <AnimatedSection variants={scaleIn} delay={0.4} className="flex justify-center mt-12">
                         <Link 
                             href="/clients" 
                             className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 px-8 py-3 rounded-full font-bold text-base transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
@@ -244,7 +258,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                                 <path d="M5 12h14M12 5l7 7-7 7" />
                             </svg>
                         </Link>
-                    </div>
+                    </AnimatedSection>
                 </div>
             </section>
 
@@ -252,23 +266,25 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             {slug !== 'shop-optimization' && (
                 <section className={styles.ctaSection}>
                     <div className={styles.container}>
-                        <h2 className={styles.ctaTitle}>Ready to Get Started?</h2>
-                        <p className={styles.ctaDescription}>
-                            Let&apos;s discuss how {service.title} can help grow your business.
-                        </p>
-                        <div className={styles.ctaButtons}>
-                            <a
-                                href="https://wa.me/6281250493122"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={styles.btnPrimary}
-                            >
-                                Contact via WhatsApp
-                            </a>
-                            <Link href="/services" className={styles.btnSecondary}>
-                                View All Services
-                            </Link>
-                        </div>
+                        <AnimatedSection variants={scaleIn}>
+                            <h2 className={styles.ctaTitle}>Ready to Get Started?</h2>
+                            <p className={styles.ctaDescription}>
+                                Let&apos;s discuss how {service.title} can help grow your business.
+                            </p>
+                            <div className={styles.ctaButtons}>
+                                <a
+                                    href="https://wa.me/6281250493122"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.btnPrimary}
+                                >
+                                    Contact via WhatsApp
+                                </a>
+                                <Link href="/services" className={styles.btnSecondary}>
+                                    View All Services
+                                </Link>
+                            </div>
+                        </AnimatedSection>
                     </div>
                 </section>
             )}

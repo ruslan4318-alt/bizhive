@@ -25,8 +25,14 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(255, 170, 0, 0.1) 0%, transparent 50%);
+    background: radial-gradient(ellipse at 50% 0%, rgba(255, 170, 0, 0.15) 0%, transparent 60%);
     pointer-events: none;
+    animation: breathing 8s ease-in-out infinite;
+}
+
+@keyframes breathing {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
 }
 
 .breadcrumb {
@@ -124,7 +130,8 @@
 
 .featureCard:hover {
     border-color: rgba(255, 170, 0, 0.3);
-    transform: translateY(-4px);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .featureNumber {
