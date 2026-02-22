@@ -15,6 +15,7 @@ import {
   slideInRight,
   scaleIn
 } from '@/components/animations';
+import NewsPreview from '@/components/NewsPreview';
 
 // SVG Icons as components for consistency
 const Icons = {
@@ -381,45 +382,10 @@ export default function Home() {
           </div>
         </section>
 
+
+
         {/* News Preview */}
-        <section className="py-20 px-6 bg-slate-50" id="news">
-          <div className="max-w-7xl mx-auto">
-            <AnimatedSection className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
-              <div>
-                <p className="text-sm font-semibold text-amber-500 mb-2 uppercase tracking-widest">Latest Updates</p>
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">News & Insights</h2>
-              </div>
-              <motion.div whileHover={{ x: 5 }}>
-                <Link href="/news" className="text-amber-500 font-semibold text-sm flex items-center gap-2 hover:text-slate-900 transition-colors">
-                  View All News <Icons.Arrow />
-                </Link>
-              </motion.div>
-            </AnimatedSection>
-            
-            <StaggerContainer className="grid md:grid-cols-3 gap-5">
-              {[
-                { title: 'BIZHIVE Partners with Major Beauty Brand', date: 'Jan 2026', category: 'Partnership' },
-                { title: 'Live Streaming Tips for Maximum Engagement', date: 'Dec 2025', category: 'Tips' },
-                { title: 'Q4 2025 E-Commerce Trends Report', date: 'Nov 2025', category: 'Report' }
-              ].map((news, i) => (
-                <StaggerItem key={i}>
-                  <HoverCard className="group bg-white rounded-2xl overflow-hidden border border-slate-100">
-                    <div className="aspect-[16/9] bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center">
-                      <span className="text-slate-300 text-sm font-medium">Featured Image</span>
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs font-semibold text-amber-500 uppercase">{news.category}</span>
-                        <span className="text-xs text-slate-400">{news.date}</span>
-                      </div>
-                      <h3 className="font-semibold text-slate-900 group-hover:text-amber-500 transition-colors leading-snug">{news.title}</h3>
-                    </div>
-                  </HoverCard>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
-          </div>
-        </section>
+        <NewsPreview />
 
         {/* Partnership & Training Section */}
         <section className="py-20 px-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">

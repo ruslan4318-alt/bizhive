@@ -39,6 +39,27 @@
     gap: var(--space-8);
 }
 
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--color-bg-light);
+    border-top: 3px solid var(--color-navy);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .card {
     background-color: var(--color-white);
     border: 1px solid var(--color-border);
@@ -54,8 +75,19 @@
 }
 
 .cardImage {
-    aspect-ratio: 16/10;
+    aspect-ratio: 16/9;
     overflow: hidden;
+}
+
+.cardImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-base);
+}
+
+.card:hover .cardImage img {
+    transform: scale(1.05);
 }
 
 .imagePlaceholder {

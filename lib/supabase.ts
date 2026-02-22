@@ -12,7 +12,7 @@ export interface NewsArticle {
     slug: string;
     excerpt: string | null;
     content: string | null;
-    image_url: string | null;
+    featured_image: string | null;
     published_at: string;
     created_at: string;
 }

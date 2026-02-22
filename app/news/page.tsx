@@ -1,138 +1,134 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { supabase, type NewsArticle } from '@/lib/supabase';
 import styles from './news.module.css';
 
-// Sample data for development - will be replaced by Supabase
-const sampleNews: NewsArticle[] = [
-    {
-        id: '1',
-        slug: 'bizhive-partners-with-shopee',
-        title: 'BIZHIVE Partners with Shopee for 2024 Campaign',
-        excerpt: 'Exciting new partnership announcement to bring enhanced marketing solutions to Shopee sellers.',
-        content: 'Full article content here...',
-        image_url: null,
-        published_at: '2024-01-15T00:00:00Z',
-        created_at: '2024-01-15T00:00:00Z',
-    },
-    {
-        id: '2',
-        slug: 'new-studio-launch',
-        title: 'New Live Commerce Studio Opening',
-        excerpt: 'Expanding our capabilities with a state-of-the-art live streaming studio in Jakarta.',
-        content: 'Full article content here...',
-        image_url: null,
-        published_at: '2024-01-10T00:00:00Z',
-        created_at: '2024-01-10T00:00:00Z',
-    },
-    {
-        id: '3',
-        slug: 'tiktok-shop-milestone',
-        title: 'Reaching 5,000 KOL Milestone on TikTok Shop',
-        excerpt: 'A celebration of our growing network of managed influencers and content creators.',
-        content: 'Full article content here...',
-        image_url: null,
-        published_at: '2024-01-05T00:00:00Z',
-        created_at: '2024-01-05T00:00:00Z',
-    },
-    {
-        id: '4',
-        slug: 'quarterly-results-q4',
-        title: 'Q4 2023 Results: Record-Breaking Performance',
-        excerpt: 'BIZHIVE achieved unprecedented growth in the final quarter of 2023.',
-        content: 'Full article content here...',
-        image_url: null,
-        published_at: '2024-01-02T00:00:00Z',
-        created_at: '2024-01-02T00:00:00Z',
-    },
-    {
-        id: '5',
-        slug: 'content-creator-program',
-        title: 'Launching Creator Development Program',
-        excerpt: 'New initiative to support and develop content creators across Indonesia.',
-        content: 'Full article content here...',
-        image_url: null,
-        published_at: '2023-12-20T00:00:00Z',
-        created_at: '2023-12-20T00:00:00Z',
-    },
-    {
-        id: '6',
-        slug: 'year-end-celebration',
-        title: 'BIZHIVE Year-End Celebration 2023',
-        excerpt: 'Celebrating achievements and milestones with our team and partners.',
-        content: 'Full article content here...',
-        image_url: null,
-        published_at: '2023-12-15T00:00:00Z',
-        created_at: '2023-12-15T00:00:00Z',
-    },
-];
+export default function NewsPage() {
+    const [articles, setArticles] = useState<NewsArticle[]>([]);
+    const [loading, setLoading] = useState(true);
 
-async function getNewsArticles(): Promise<NewsArticle[]> {
-    try {
-        const { data, error } = await supabase
-            .from('news')
-            .select('*')
-            .order('published_at', { ascending: false });
+    useEffect(() => {
+        async function fetchNews() {
+            try {
+                const { data, error } = await supabase
+                    .from('news')
+                    .select('*')
+                    .eq('is_published', true)
+                    .order('published_at', { ascending: false });
 
-        if (error || !data || data.length === 0) {
-            // Return sample data if no data in Supabase
-            return sampleNews;
+                if (!error && data) {
+                    setArticles(data as NewsArticle[]);
+                }
+            } catch (err) {
+                console.error('Error fetching news:', err);
+            } finally {
+                setLoading(false);
+            }
         }
 
-        return data as NewsArticle[];
-    } catch {
-        return sampleNews;
-    }
-}
+        fetchNews();
+    }, []);
 
-export const metadata = {
-    title: 'News & Updates - BIZHIVE',
-    description: 'Latest news, updates, and announcements from BIZHIVE, your e-commerce marketing agency.',
-};
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
 
-export default async function NewsPage() {
-    const articles = await getNewsArticles();
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { 
+            opacity: 1, 
+            y: 0,
+            transition: {
+                duration: 0.5,
+                ease: [0.22, 1, 0.36, 1] as [number, number, number, number]
+            }
+        }
+    };
 
     return (
         <div className={styles.page}>
             <div className={styles.container}>
                 <header className={styles.header}>
-                    <h1 className={styles.title}>News & Updates</h1>
-                    <p className={styles.subtitle}>
+                    <motion.h1 
+                        className={styles.title}
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        News & Updates
+                    </motion.h1>
+                    <motion.p 
+                        className={styles.subtitle}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                    >
                         Stay updated with the latest announcements, campaigns, and achievements from BIZHIVE.
-                    </p>
+                    </motion.p>
                 </header>
 
-                <div className={styles.grid}>
-                    {articles.map((article) => (
-                        <Link
-                            key={article.id}
-                            href={`/news/${article.slug}`}
-                            className={styles.card}
-                        >
-                            <div className={styles.cardImage}>
-                                {article.image_url ? (
-                                    <img src={article.image_url} alt={article.title} />
-                                ) : (
-                                    <div className={styles.imagePlaceholder}>
-                                        <span>News</span>
+                {loading ? (
+                    <div className={styles.loading}>
+                        <div className={styles.spinner}></div>
+                    </div>
+                ) : articles.length > 0 ? (
+                    <motion.div 
+                        className={styles.grid}
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        {articles.map((article) => (
+                            <motion.div key={article.id} variants={itemVariants}>
+                                <Link
+                                    href={`/news/${article.slug}`}
+                                    className={styles.card}
+                                >
+                                    <div className={styles.cardImage}>
+                                        {article.featured_image ? (
+                                            <img src={article.featured_image} alt={article.title} />
+                                        ) : (
+                                            <div className={styles.imagePlaceholder}>
+                                                <span>News</span>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                            <div className={styles.cardContent}>
-                                <span className={styles.date}>
-                                    {new Date(article.published_at).toLocaleDateString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                    })}
-                                </span>
-                                <h2 className={styles.cardTitle}>{article.title}</h2>
-                                <p className={styles.cardExcerpt}>{article.excerpt}</p>
-                                <span className={styles.readMore}>Read More →</span>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                                    <div className={styles.cardContent}>
+                                        <span className={styles.date}>
+                                            {new Date(article.published_at).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                            })}
+                                        </span>
+                                        <h2 className={styles.cardTitle}>{article.title}</h2>
+                                        <p className={styles.cardExcerpt}>{article.excerpt}</p>
+                                        <span className={styles.readMore}>Read More →</span>
+                                    </div>
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                ) : (
+                    <motion.div 
+                        className={styles.empty}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                    >
+                        <h3>No news found</h3>
+                        <p>We haven't posted any updates yet. Check back soon!</p>
+                    </motion.div>
+                )}
             </div>
         </div>
     );
