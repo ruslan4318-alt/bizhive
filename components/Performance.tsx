@@ -245,7 +245,7 @@ export default function Performance() {
 
                             <div className={styles.chartContainer}>
                                 <div className={styles.chartLabel}>Trend Chart</div>
-                                <RealisticChart type="after" color="#10B981" isVisible={isVisible} />
+                                <RealisticChart type="after" color="#f59e0b" isVisible={isVisible} />
                                 <div className={styles.chartAxis}>
                                     <span>1</span>
                                     <span>10</span>

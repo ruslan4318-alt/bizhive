@@ -13,7 +13,7 @@
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(ellipse at 30% 0%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 30% 0%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
         radial-gradient(ellipse at 70% 100%, rgba(255, 170, 0, 0.08) 0%, transparent 50%);
     pointer-events: none;
 }
@@ -42,9 +42,9 @@
 
 .badge {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    color: #10B981;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
     padding: 8px 20px;
     border-radius: 50px;
     font-size: 0.875rem;
@@ -62,7 +62,7 @@
 }
 
 .highlight {
-    background: linear-gradient(135deg, #10B981, #059669);
+    background: linear-gradient(135deg, #f59e0b, var(--color-amber-500));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -135,12 +135,12 @@
 }
 
 .cardAfter {
-    border-color: rgba(16, 185, 129, 0.3);
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(16, 185, 129, 0.02));
+    border-color: rgba(245, 158, 11, 0.3);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.02));
 }
 
 .cardAfter:hover {
-    border-color: rgba(16, 185, 129, 0.5);
+    border-color: rgba(245, 158, 11, 0.5);
     box-shadow: 0 0 60px rgba(16, 185, 129, 0.15);
 }
 
@@ -161,7 +161,7 @@
 }
 
 .cardLabelAfter {
-    background: linear-gradient(135deg, #10B981, #059669);
+    background: linear-gradient(135deg, #f59e0b, var(--color-amber-500));
     color: #000;
     padding: 6px 16px;
     border-radius: 20px;
@@ -203,7 +203,7 @@
 }
 
 .metricGrowth {
-    color: #10B981;
+    color: #f59e0b;
 }
 
 .growthTag {
@@ -211,8 +211,8 @@
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(16, 185, 129, 0.2);
-    color: #10B981;
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -309,7 +309,7 @@
     position: absolute;
     inset: -8px;
     border-radius: 50%;
-    background: rgba(16, 185, 129, 0.2);
+    background: rgba(245, 158, 11, 0.2);
     animation: pulse 2s ease-in-out infinite;
 }
 
@@ -348,37 +348,40 @@
     font-size: 0.875rem;
 }
 
-.separator {
-    color: rgba(255, 255, 255, 0.3);
+.section {
+    padding: var(--space-24) 0;
+    background: var(--color-navy-dark);
+    position: relative;
+    overflow: hidden;
 }
 
 .viewReportBtn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 24px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.875rem;
-    font-weight: 500;
+    padding: 12px 32px;
+    background: var(--color-amber-500);
+    border: none;
+    border-radius: 9999px;
+    color: #0f172a;
+    font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2);
 }
 
 .viewReportBtn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(16, 185, 129, 0.5);
-    color: #10B981;
+    background: var(--color-amber-400);
     transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(245, 158, 11, 0.3);
 }
 
 .viewAllLink {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: #10B981;
+    color: #f59e0b;
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;

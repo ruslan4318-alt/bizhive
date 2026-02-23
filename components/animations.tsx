@@ -68,22 +68,25 @@ export const staggerItem: Variants = {
   }
 };
 
-// Animated Section Component
 interface AnimatedSectionProps {
   children: ReactNode;
   className?: string;
   variants?: Variants;
   delay?: number;
+  margin?: any; // Use any to bypass strict MarginType if it's causing issues, or use string
+  threshold?: 'some' | 'all' | number;
 }
 
 export function AnimatedSection({ 
   children, 
   className = '', 
   variants = fadeInUp,
-  delay = 0 
+  delay = 0,
+  margin = '-100px',
+  threshold = 'some'
 }: AnimatedSectionProps) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const isInView = useInView(ref, { once: true, margin, amount: threshold });
 
   return (
     <motion.div
