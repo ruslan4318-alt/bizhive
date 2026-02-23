@@ -41,13 +41,15 @@ function AnimatedCounter({ end, suffix = '', prefix = '', duration = 2000, isVis
     return <span>{prefix}{count.toLocaleString('id-ID')}{suffix}</span>;
 }
 
-// Chart that matches the screenshot pattern - with spike around day 9-11
+// Chart that matches the screenshot pattern
 function RealisticChart({ type, color, isVisible }: { type: 'before' | 'after'; color: string; isVisible: boolean }) {
-    // Data matching screenshot: relatively flat with spike around day 9-11
-    const beforeData = [45, 48, 44, 50, 47, 52, 48, 95, 88, 75, 52, 50, 48, 52, 55, 50, 48, 52, 55, 58, 52, 55, 58, 72, 78, 68, 55, 52, 50, 52];
-    const afterData = [55, 58, 52, 60, 58, 65, 60, 98, 92, 82, 65, 62, 58, 62, 68, 62, 60, 65, 68, 72, 65, 68, 72, 85, 92, 80, 68, 65, 62, 65];
+    // Jan 2024: Peaks around 19, 22, 24, 31
+    const beforeData = [5, 5, 7, 12, 8, 5, 5, 10, 14, 10, 8, 5, 8, 10, 12, 15, 25, 35, 85, 45, 65, 95, 30, 85, 35, 25, 30, 32, 35, 32, 80];
+    // Nov 2024: Massive spike at 11 (11.11)
+    const afterData = [35, 38, 42, 45, 43, 48, 45, 43, 46, 55, 120, 35, 55, 62, 58, 55, 65, 60, 62, 58, 55, 58, 62, 70, 60, 65, 75, 70, 68, 65];
     
     const data = type === 'before' ? beforeData : afterData;
+    const peakIndex = type === 'before' ? 21 : 10; // Day 22 for Jan, Day 11 for Nov
     const maxValue = Math.max(...data);
     
     // Create SVG path
@@ -106,10 +108,10 @@ function RealisticChart({ type, color, isVisible }: { type: 'before' | 'after'; 
                 className={styles.chartLine}
             />
 
-            {/* Peak indicator for the spike */}
+            {/* Peak indicator */}
             <circle 
-                cx={points[7].x} 
-                cy={points[7].y} 
+                cx={points[peakIndex].x} 
+                cy={points[peakIndex].y} 
                 r="4" 
                 fill={color}
                 className={styles.peakDot}
@@ -159,7 +161,7 @@ export default function Performance() {
                             Real Impact, <span className={styles.highlight}>Real Growth</span>
                         </h2>
                         <p className={styles.subtitle}>
-                            See how we transformed Brand A&apos;s Shopee performance in just 1 month
+                            See how we transformed Shopee performance from January to November
                         </p>
                     </div>
 
@@ -168,26 +170,26 @@ export default function Performance() {
                         <div className={`${styles.card} ${styles.cardBefore} ${isVisible ? styles.slideInLeft : ''}`}>
                             <div className={styles.cardHeader}>
                                 <span className={styles.cardLabel}>Before</span>
-                                <span className={styles.cardPeriod}>September 2024</span>
+                                <span className={styles.cardPeriod}>January</span>
                             </div>
                             
                             <div className={styles.metricsGrid}>
                                 <div className={styles.metric}>
                                     <span className={styles.metricLabel}>Sales</span>
                                     <span className={styles.metricValue}>
-                                        Rp <AnimatedCounter end={7633} suffix="M" isVisible={isVisible} />
+                                        Rp <AnimatedCounter end={1473} suffix="K" isVisible={isVisible} />
                                     </span>
                                 </div>
                                 <div className={styles.metric}>
                                     <span className={styles.metricLabel}>Visitors</span>
                                     <span className={styles.metricValue}>
-                                        <AnimatedCounter end={977958} isVisible={isVisible} />
+                                        <AnimatedCounter end={294} isVisible={isVisible} />
                                     </span>
                                 </div>
                                 <div className={styles.metric}>
                                     <span className={styles.metricLabel}>Orders</span>
                                     <span className={styles.metricValue}>
-                                        <AnimatedCounter end={37569} isVisible={isVisible} />
+                                        <AnimatedCounter end={5} isVisible={isVisible} />
                                     </span>
                                 </div>
                             </div>
@@ -199,7 +201,7 @@ export default function Performance() {
                                     <span>1</span>
                                     <span>10</span>
                                     <span>20</span>
-                                    <span>30</span>
+                                    <span>31</span>
                                 </div>
                             </div>
                         </div>
@@ -216,30 +218,30 @@ export default function Performance() {
                         <div className={`${styles.card} ${styles.cardAfter} ${isVisible ? styles.slideInRight : ''}`}>
                             <div className={styles.cardHeader}>
                                 <span className={styles.cardLabelAfter}>After</span>
-                                <span className={styles.cardPeriod}>October 2024</span>
+                                <span className={styles.cardPeriod}>November</span>
                             </div>
                             
                             <div className={styles.metricsGrid}>
                                 <div className={styles.metric}>
                                     <span className={styles.metricLabel}>Sales</span>
                                     <span className={`${styles.metricValue} ${styles.metricGrowth}`}>
-                                        Rp <AnimatedCounter end={9486} suffix="M" isVisible={isVisible} />
+                                        Rp <AnimatedCounter end={541253} suffix="K" isVisible={isVisible} />
                                     </span>
-                                    <span className={styles.growthTag}>+24.2%</span>
+                                    <span className={styles.growthTag}>+36,650%</span>
                                 </div>
                                 <div className={styles.metric}>
                                     <span className={styles.metricLabel}>Visitors</span>
                                     <span className={`${styles.metricValue} ${styles.metricGrowth}`}>
-                                        <AnimatedCounter end={1288169} isVisible={isVisible} />
+                                        <AnimatedCounter end={67863} isVisible={isVisible} />
                                     </span>
-                                    <span className={styles.growthTag}>+31.7%</span>
+                                    <span className={styles.growthTag}>+23,000%</span>
                                 </div>
                                 <div className={styles.metric}>
                                     <span className={styles.metricLabel}>Orders</span>
                                     <span className={`${styles.metricValue} ${styles.metricGrowth}`}>
-                                        <AnimatedCounter end={45932} isVisible={isVisible} />
+                                        <AnimatedCounter end={997} isVisible={isVisible} />
                                     </span>
-                                    <span className={styles.growthTag}>+22.3%</span>
+                                    <span className={styles.growthTag}>+19,840%</span>
                                 </div>
                             </div>
 
@@ -256,15 +258,8 @@ export default function Performance() {
                         </div>
                     </div>
 
-                    {/* Category Badge & View Report Button */}
+                    {/* View Report Button */}
                     <div className={`${styles.footer} ${isVisible ? styles.fadeInUp : ''}`}>
-                        <div className={styles.categoryBadge}>
-                            <span>🛍️ Cosmetic</span>
-                            <span className={styles.separator}>•</span>
-                            <span>📱 Shopee</span>
-                            <span className={styles.separator}>•</span>
-                            <span>⏱️ 1 Month</span>
-                        </div>
                         <button 
                             className={styles.viewReportBtn}
                             onClick={() => setShowModal(true)}
@@ -295,7 +290,7 @@ export default function Performance() {
                         </button>
                         <div className={styles.modalContent}>
                             <Image
-                                src="/performance-proof.png"
+                                src="/performance-proof 1 .png"
                                 alt="Performance Report - Shopee Optimization Results"
                                 width={1024}
                                 height={513}

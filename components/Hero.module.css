@@ -73,6 +73,13 @@
     max-width: 520px;
 }
 
+.cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
 .btnPrimary,
 .btnSecondary {
     display: inline-flex;
@@ -218,6 +225,10 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    .cta {
+        justify-content: center;
     }
 
     .imageColumn {

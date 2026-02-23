@@ -96,10 +96,10 @@ export default function Hero() {
                                 animate={{ y: [0, -10, 0] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                             >
-                                <div className={styles.badgeIcon}>⭐</div>
+                                <div className={styles.badgeIcon}>🚀</div>
                                 <div>
-                                    <p className={styles.badgeText}>4.8</p>
-                                    <p className={styles.badgeSubtext}>RATING (35K)</p>
+                                    <p className={styles.badgeText}>+150%</p>
+                                    <p className={styles.badgeSubtext}>SALES GROWTH</p>
                                 </div>
                             </motion.div>
 
@@ -108,10 +108,10 @@ export default function Hero() {
                                 animate={{ y: [0, 10, 0] }}
                                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                             >
-                                <div className={styles.badgeIconGreen}>📈</div>
+                                <div className={styles.badgeIconGreen}>🎯</div>
                                 <div>
-                                    <p className={styles.badgeText}>85+</p>
-                                    <p className={styles.badgeSubtext}>ACTIVE BRANDS</p>
+                                    <p className={styles.badgeText}>10x</p>
+                                    <p className={styles.badgeSubtext}>AVERAGE ROAS</p>
                                 </div>
                             </motion.div>
 
