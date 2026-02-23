@@ -105,14 +105,21 @@ body {
     color: var(--color-navy-dark);
 }
 
-/* ===== UTILITIES & GLOBAL COMPONENTS ===== */
+/* Section standardizing for clickability */
+section {
+    position: relative;
+    z-index: 1;
+}
+
 .section-padding {
-    padding: var(--space-20) 0;
+    padding: var(--space-12) 0;
+    position: relative;
+    z-index: 2;
 }
 
 @media (min-width: 1024px) {
     .section-padding {
-        padding: var(--space-32) 0;
+        padding: var(--space-20) 0;
     }
 }
 

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from './Services.module.css';
 
 const services = [
@@ -60,7 +61,11 @@ export default function Services() {
                 </div>
                 <div className={styles.grid}>
                     {services.map((service) => (
-                        <div key={service.id} className={styles.card}>
+                        <Link 
+                            key={service.id} 
+                            href={`/services/${service.id}`}
+                            className={styles.card}
+                        >
                             <div className={styles.cardIcon}>
                                 {service.icon}
                             </div>
@@ -68,7 +73,7 @@ export default function Services() {
                             <p className={styles.cardDescription}>
                                 {service.description}
                             </p>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>

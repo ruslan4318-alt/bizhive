@@ -4,13 +4,16 @@
     display: flex;
     align-items: center;
     overflow: hidden;
-    padding: var(--space-32) 0 var(--space-20);
+    padding: var(--space-20) 0 var(--space-12);
+    z-index: 1;
 }
 
 .background {
     position: absolute;
     inset: 0;
     background: #ffffff;
+    z-index: -1;
+    pointer-events: none;
     background-image: 
         radial-gradient(at 0% 0%, hsla(215, 67%, 98%, 1) 0, transparent 50%), 
         radial-gradient(at 100% 0%, hsla(38, 100%, 98%, 1) 0, transparent 50%);

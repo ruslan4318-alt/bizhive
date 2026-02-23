@@ -1,6 +1,6 @@
 .section {
-    padding: var(--space-24) 0;
-    background-color: var(--color-white);
+    padding: 0;
+    background: transparent;
     position: relative;
     overflow: hidden;
 }
