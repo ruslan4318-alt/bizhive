@@ -92,15 +92,11 @@ export default function Footer() {
                                     <a href="https://wa.me/6285711276897" className="hover:text-amber-500 transition-colors block">+62 857-1127-6897 (Ruslan)</a>
                                 </div>
                             </li>
-                            <li className="mt-6 pt-4 border-t border-white/10 text-xs text-slate-500">
-                                <span className="block text-slate-400 font-semibold mb-1">Corporate Entity:</span>
-                                <div className="text-slate-300 font-medium">CV. BIZHIVE Pemasaran Global</div>
-                            </li>
                         </ul>
                     </div>
                 </div>
                 <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-                    <p>© {currentYear} BIZHIVE Agency. All rights reserved.</p>
+                    <p>© {currentYear} CV. BIZHIVE Pemasaran Global (BIZHIVE Agency). All rights reserved.</p>
                     <div className="flex items-center gap-6">
                         <a className="hover:text-white transition-colors" href="#">Privacy Policy</a>
                         <a className="hover:text-white transition-colors" href="#">Terms of Service</a>
