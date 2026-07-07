@@ -92,6 +92,10 @@ export default function Footer() {
                                     <a href="https://wa.me/6285711276897" className="hover:text-amber-500 transition-colors block">+62 857-1127-6897 (Ruslan)</a>
                                 </div>
                             </li>
+                            <li className="mt-6 pt-4 border-t border-white/10 text-xs text-slate-500">
+                                <span className="block text-slate-400 font-semibold mb-1">Corporate Entity:</span>
+                                <div className="text-slate-300 font-medium">CV. BIZHIVE Pemasaran Global</div>
+                            </li>
                         </ul>
                     </div>
                 </div>
