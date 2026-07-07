@@ -96,7 +96,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-                    <p>© {currentYear} CV. BIZHIVE Pemasaran Global (BIZHIVE Agency). All rights reserved.</p>
+                    <p>© {currentYear} CV. BIZHIVE Pemasaran Global. All rights reserved.</p>
                     <div className="flex items-center gap-6">
                         <a className="hover:text-white transition-colors" href="#">Privacy Policy</a>
                         <a className="hover:text-white transition-colors" href="#">Terms of Service</a>
