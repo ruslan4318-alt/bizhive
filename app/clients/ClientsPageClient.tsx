@@ -3,7 +3,7 @@
 import { motion, Variants } from 'framer-motion';
 import styles from './clients.module.css';
 
-interface ClientItem {
+export interface ClientItem {
   id: string;
   name: string;
   logo_url?: string | null;
@@ -11,88 +11,29 @@ interface ClientItem {
   platform?: string | null;
 }
 
-interface ClientsPageClientProps {
-  brands: ClientItem[];
+export interface CaseStudyItem {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  before_value?: string | null;
+  after_value?: string | null;
+  growth_percentage?: string | null;
+  metric_type?: string | null;
+  timeline?: string | null;
+  featured_image?: string | null;
+  is_featured?: boolean;
+  client?: {
+    name: string;
+    logo_url?: string | null;
+    industry?: string | null;
+  } | null;
 }
 
-// Detailed success stories tetap hardcode karena ada data khusus
-const successStories = [
-  {
-    id: 'story-1',
-    name: 'Seoul Studio',
-    category: 'Service',
-    platform: 'Shopee',
-    logo: '/clients/Seoul Studio.png',
-    challenge: 'Large product catalog was disorganized, leading to poor customer experience and low conversion.',
-    solution: 'Full catalog restructuring, categorization, and bundling strategy for better discoverability.',
-    colors: { bg: 'from-stone-50 to-warm-gray-50', accent: 'text-stone-600', border: 'border-stone-100' },
-    results: [
-      { label: 'Sales Increase', value: '+90%' },
-      { label: 'Visitor Growth', value: '+35%' },
-      { label: 'Order Volume', value: '+25%' },
-    ],
-  },
-  {
-    id: 'story-2',
-    name: 'Some By Mi',
-    category: 'Skincare',
-    platform: 'TikTok Shop',
-    logo: '/clients/somebymii.png',
-    challenge: 'Needed to build brand awareness and sales through influencer partnerships but struggled with management.',
-    solution: 'End-to-end KOL recruitment, vetting, and performance-driven content campaign execution.',
-    colors: { bg: 'from-emerald-50 to-teal-50', accent: 'text-emerald-600', border: 'border-emerald-100' },
-    results: [
-      { label: 'Sales Increase', value: '+150%' },
-      { label: 'Visitor Growth', value: '+300%' },
-      { label: 'Order Volume', value: '+180%' },
-    ],
-  },
-  {
-    id: 'story-3',
-    name: 'Hyponic',
-    category: 'Pet Care',
-    platform: 'Shopee',
-    logo: '/clients/Hyponic.png',
-    challenge: 'Premium pricing made it difficult to compete with mass-market brands on Shopee.',
-    solution: 'Premium brand storytelling, trusted reviews program, and targeted ads for high-value pet owners.',
-    colors: { bg: 'from-blue-50 to-cyan-50', accent: 'text-blue-600', border: 'border-blue-100' },
-    results: [
-      { label: 'Sales Increase', value: '+85%' },
-      { label: 'Visitor Growth', value: '+200%' },
-      { label: 'Order Volume', value: '+60%' },
-    ],
-  },
-  {
-    id: 'story-4',
-    name: 'Joco Production',
-    category: 'Service',
-    platform: 'TikTok Shop',
-    logo: '/clients/Joco.png',
-    challenge: 'Wanted to leverage live streaming for clients but lacked technical expertise and setup.',
-    solution: 'Professional studio setup, technical host training, and product demo script development.',
-    colors: { bg: 'from-indigo-50 to-violet-50', accent: 'text-indigo-600', border: 'border-indigo-100' },
-    results: [
-      { label: 'Sales Increase', value: '+120%' },
-      { label: 'Visitor Growth', value: '+450%' },
-      { label: 'Order Volume', value: '+300%' },
-    ],
-  },
-  {
-    id: 'story-5',
-    name: 'Cosmax',
-    category: 'Manufacturing',
-    platform: 'Shopee',
-    logo: '/clients/Cosmax.png',
-    challenge: 'B2B giant entering B2C market; needed a complete digital transformation strategy.',
-    solution: 'Direct-to-consumer channel build, official store launch, and brand awareness campaigns.',
-    colors: { bg: 'from-pink-50 to-rose-50', accent: 'text-rose-600', border: 'border-rose-100' },
-    results: [
-      { label: 'Sales Increase', value: '+200%' },
-      { label: 'Visitor Growth', value: '+500%' },
-      { label: 'Order Volume', value: '+150%' },
-    ],
-  },
-];
+interface ClientsPageClientProps {
+  brands: ClientItem[];
+  caseStudies: CaseStudyItem[];
+}
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -111,7 +52,7 @@ const itemVariants: Variants = {
   }
 };
 
-export default function ClientsPageClient({ brands }: ClientsPageClientProps) {
+export default function ClientsPageClient({ brands, caseStudies }: ClientsPageClientProps) {
   return (
     <main className={styles.main}>
       {/* Hero Section */}
@@ -164,7 +105,6 @@ export default function ClientsPageClient({ brands }: ClientsPageClientProps) {
                         className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 opacity-60 group-hover:opacity-100"
                       />
                     ) : (
-                      // Fallback: inisial nama brand
                       <div className="w-full h-full flex flex-col items-center justify-center gap-1">
                         <span className="text-2xl font-extrabold text-slate-300 group-hover:text-amber-500 transition-colors">
                           {brand.name.charAt(0).toUpperCase()}
@@ -182,106 +122,128 @@ export default function ClientsPageClient({ brands }: ClientsPageClientProps) {
         </div>
       </section>
 
-      {/* Section 2: Detailed Case Studies */}
+      {/* Section 2: Detailed Case Studies — Dynamic dari Supabase */}
       <section className={styles.clientsSection}>
         <div className={styles.container}>
-          <div className="text-center mb-20">
+          <div className="text-center mb-16">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl font-bold text-white mb-6">Challenges &amp; Proven Results</h2>
+              <h2 className="text-4xl font-bold text-white mb-4">Challenges &amp; Proven Results</h2>
               <p className="text-slate-400 max-w-2xl mx-auto text-lg">
                 Real transformation stories. We turn obstacles into opportunities.
               </p>
             </motion.div>
           </div>
 
-          <div className="grid gap-16 max-w-5xl mx-auto">
-            {successStories.map((client, index) => (
-              <motion.div
-                key={client.id}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true, margin: '-100px' }}
-                className="bg-white rounded-[2rem] p-8 md:p-12 shadow-sm border border-slate-100 overflow-hidden relative group"
-              >
-                <div className={`absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br ${client.colors.bg} rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 opacity-20 group-hover:opacity-40 transition-opacity duration-700`} />
+          {caseStudies.length === 0 ? (
+            <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-12 text-center max-w-2xl mx-auto">
+              <span className="text-4xl mb-3 block">📈</span>
+              <p className="text-white text-lg font-semibold mb-1">Belum Ada Case Study</p>
+              <p className="text-slate-400 text-sm">
+                Case study yang ditambahkan melalui menu BIZHIVE Admin akan otomatis muncul di sini.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-16 max-w-5xl mx-auto">
+              {caseStudies.map((cs, index) => (
+                <motion.div
+                  key={cs.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true, margin: '-100px' }}
+                  className="bg-white rounded-[2rem] p-8 md:p-12 shadow-sm border border-slate-100 overflow-hidden relative group"
+                >
+                  <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-amber-50 to-orange-50 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
 
-                <div className="relative z-10">
-                  {/* Header */}
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-8 border-b border-slate-100">
-                    <div className="flex items-center gap-6">
-                      <div className="w-20 h-20 rounded-2xl bg-white border border-slate-100 flex items-center justify-center p-3 shadow-sm">
-                        <img src={client.logo} alt={client.name} className="w-full h-full object-contain" />
-                      </div>
-                      <div>
-                        <h3 className="text-3xl font-bold text-slate-900 mb-2">{client.name}</h3>
-                        <div className="flex items-center gap-3">
-                          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 uppercase tracking-wide">{client.category}</span>
-                          <span className={`px-3 py-1 text-xs font-semibold rounded-full uppercase tracking-wide ${client.platform === 'Shopee' ? 'bg-orange-100 text-orange-600' : 'bg-slate-900 text-white'}`}>{client.platform}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Challenge & Solution */}
-                  <div className="grid md:grid-cols-2 gap-12 relative mb-12">
-                    <div className="md:hidden flex justify-center py-4 text-slate-300">
-                      <svg className="w-8 h-8 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    </div>
-                    <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full border border-slate-100 items-center justify-center z-10 shadow-sm text-slate-300">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center border border-red-100 shadow-sm">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
-                        </div>
-                        <h4 className="font-bold text-slate-900 uppercase tracking-wider text-sm">The Challenge</h4>
-                      </div>
-                      <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 h-full">
-                        <p className="text-slate-600 leading-relaxed font-medium">&ldquo;{client.challenge}&rdquo;</p>
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 mb-2 justify-end md:flex-row-reverse">
-                        <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center border border-emerald-100 shadow-sm">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                        </div>
-                        <h4 className="font-bold text-slate-900 uppercase tracking-wider text-sm">Our Solution</h4>
-                      </div>
-                      <div className={`rounded-2xl p-6 border h-full bg-gradient-to-br ${client.colors.bg} ${client.colors.border}`}>
-                        <p className="text-slate-700 leading-relaxed font-medium">{client.solution}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Results */}
-                  <div className="bg-slate-900 rounded-3xl p-8 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
-                    <div className="relative z-10">
-                      <h4 className="text-amber-500 font-bold uppercase tracking-widest text-xs mb-8 flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-                        Impact Delivered
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:divide-x md:divide-white/10">
-                        {client.results.map((res, idx) => (
-                          <div key={idx} className="text-center md:text-left md:pl-8 first:pl-0">
-                            <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-tight">{res.value}</div>
-                            <div className="text-sm font-semibold text-slate-400 uppercase tracking-wider">{res.label}</div>
+                  <div className="relative z-10">
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-100">
+                      <div className="flex items-center gap-6">
+                        {cs.client?.logo_url ? (
+                          <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center p-2 shadow-sm">
+                            <img src={cs.client.logo_url} alt={cs.client.name} className="w-full h-full object-contain" />
                           </div>
-                        ))}
+                        ) : cs.featured_image ? (
+                          <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm">
+                            <img src={cs.featured_image} alt={cs.title} className="w-full h-full object-cover" />
+                          </div>
+                        ) : null}
+                        <div>
+                          <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-1">{cs.title}</h3>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {cs.client?.name && (
+                              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-700 uppercase tracking-wide">
+                                {cs.client.name}
+                              </span>
+                            )}
+                            {cs.client?.industry && (
+                              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 uppercase tracking-wide">
+                                {cs.client.industry}
+                              </span>
+                            )}
+                            {cs.timeline && (
+                              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-600 uppercase tracking-wide">
+                                {cs.timeline}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    {/* Description / Story */}
+                    {cs.description && (
+                      <div className="mb-8 bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                        <p className="text-slate-700 leading-relaxed font-medium">
+                          {cs.description}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Metrics Impact Grid */}
+                    {(cs.growth_percentage || cs.before_value || cs.after_value) && (
+                      <div className="bg-slate-900 rounded-3xl p-8 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+                        <div className="relative z-10">
+                          <h4 className="text-amber-500 font-bold uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            {cs.metric_type || 'Impact Delivered'}
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:divide-x md:divide-white/10">
+                            {cs.before_value && (
+                              <div className="text-center md:text-left md:pl-6 first:pl-0">
+                                <div className="text-2xl md:text-3xl font-bold text-slate-400 mb-1">{cs.before_value}</div>
+                                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Before</div>
+                              </div>
+                            )}
+                            {cs.after_value && (
+                              <div className="text-center md:text-left md:pl-6 first:pl-0">
+                                <div className="text-2xl md:text-3xl font-extrabold text-white mb-1">{cs.after_value}</div>
+                                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">After</div>
+                              </div>
+                            )}
+                            {cs.growth_percentage && (
+                              <div className="text-center md:text-left md:pl-6 first:pl-0">
+                                <div className="text-3xl md:text-4xl font-extrabold text-amber-400 mb-1">{cs.growth_percentage}</div>
+                                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Growth</div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
           {/* CTA */}
           <div className="text-center mt-32">
