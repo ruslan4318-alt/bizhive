@@ -36,7 +36,7 @@ export default function UpdateDataClient() {
       .select('id, name, platform, brand:brands(name)')
       .neq('status', 'done')
       .order('name');
-    setProjects(data || []);
+    setProjects((data as any) || []);
     setLoading(false);
   }, [supabase]);
 

@@ -3,15 +3,16 @@
 import { motion, Variants } from 'framer-motion';
 import styles from './clients.module.css';
 
-interface Brand {
+interface ClientItem {
   id: string;
   name: string;
   logo_url?: string | null;
-  platform: string;
+  industry?: string | null;
+  platform?: string | null;
 }
 
 interface ClientsPageClientProps {
-  brands: Brand[];
+  brands: ClientItem[];
 }
 
 // Detailed success stories tetap hardcode karena ada data khusus

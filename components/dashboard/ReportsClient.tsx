@@ -7,7 +7,7 @@ interface Project {
   id: string;
   name: string;
   platform: string;
-  brand?: { name: string };
+  brand?: { name: string } | any;
 }
 
 interface ShopeeDailyRecord {
@@ -88,7 +88,7 @@ export default function ReportsClient() {
       .from('projects')
       .select('id, name, platform, brand:brands(name)')
       .order('name');
-    setProjects(data || []);
+    setProjects((data as any) || []);
     setLoading(false);
   }, [supabase]);
 
