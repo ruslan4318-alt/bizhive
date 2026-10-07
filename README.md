@@ -1,95 +1,119 @@
-# BIZHIVE - Marketing Agency Website
+# BIZHIVE — Internal Dashboard
 
-A modern, professional company website for BIZHIVE - an e-commerce marketing agency specializing in Shopee and TikTok Shop.
+Platform internal BIZHIVE untuk tracking project e-commerce, input metrik harian/bulanan, dan generate laporan performa klien.
 
-## Tech Stack
+---
 
-- **Frontend**: Next.js 14 (App Router) with TypeScript
-- **Backend**: Supabase (PostgreSQL)
-- **Styling**: CSS Modules (vanilla CSS)
-- **Deployment**: Vercel
+## 🛠 Tech Stack
 
-## Getting Started
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Styling**: Tailwind CSS
+- **Database & Auth**: [Supabase](https://supabase.com/)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-### Prerequisites
+---
 
-- Node.js 18+ installed
-- npm or yarn
+## 🚀 Setup Lokal (untuk Developer Baru)
 
-### Installation
+### 1. Clone Repository
+```bash
+git clone https://github.com/ruslan4318-alt/bizhive.git
+cd bizhive
+```
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-2. Set up environment variables:
-   - Copy `.env.local` and update with your Supabase credentials if needed
+### 3. Setup Environment Variables
+```bash
+# Copy template
+cp .env.example .env.local
+```
+Lalu isi `.env.local` dengan credentials Supabase yang diberikan oleh owner project.
 
-3. Set up Supabase database:
-   - Open your Supabase project
-   - Go to SQL Editor
-   - Run the queries in `supabase-setup.sql`
+### 4. Setup Database (jika belum ada)
+Buka [Supabase SQL Editor](https://supabase.com/dashboard) dan jalankan file:
+- `supabase-setup.sql` — Schema website publik
+- `supabase-dashboard-setup.sql` — Schema internal dashboard
 
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
+### 5. Jalankan Dev Server
+```bash
+npm run dev
+```
+Buka [http://localhost:3000](http://localhost:3000)
 
-5. Open [http://localhost:3000](http://localhost:3000)
+---
 
-## Project Structure
+## 📁 Struktur Project
 
 ```
 bizhive/
 ├── app/
-│   ├── layout.tsx          # Root layout with fonts & SEO
-│   ├── page.tsx             # Homepage
-│   ├── globals.css          # Global styles & design tokens
-│   └── news/
-│       ├── page.tsx         # News listing
-│       └── [slug]/
-│           └── page.tsx     # News detail
+│   ├── (publik)        # Website publik bizhiveid.com
+│   │   ├── clients/
+│   │   ├── news/
+│   │   └── services/
+│   ├── dashboard/      # Internal dashboard (login required)
+│   │   ├── page.tsx           # Overview & stats
+│   │   ├── projects/          # Manajemen project
+│   │   ├── update/            # Input data Shopee & TikTok
+│   │   ├── reports/           # Generate & export laporan
+│   │   └── settings/          # Manajemen brand
+│   └── admin/          # Admin CMS (website publik)
 ├── components/
-│   ├── Header.tsx           # Navigation header
-│   ├── Footer.tsx           # Site footer
-│   ├── Hero.tsx             # Hero section
-│   ├── WhyBizhive.tsx       # About section
-│   ├── Services.tsx         # Services grid
-│   ├── Studios.tsx          # Studios showcase
-│   ├── Clients.tsx          # Client logos
-│   ├── Metrics.tsx          # Key metrics
-│   ├── NewsPreview.tsx      # News preview for homepage
-│   └── FinalCTA.tsx         # Final call-to-action
+│   ├── dashboard/      # Komponen dashboard
+│   └── ...             # Komponen website publik
 ├── lib/
-│   └── supabase.ts          # Supabase client
-└── public/
-    └── images/              # Static images
+│   ├── auth.ts         # Helper autentikasi
+│   ├── supabase/       # Supabase client
+│   └── types/          # TypeScript types
+├── supabase-setup.sql          # Schema DB publik
+└── supabase-dashboard-setup.sql # Schema DB dashboard
 ```
 
-## Deployment to Vercel
+---
 
-1. Push your code to GitHub
-2. Import the repository in Vercel
-3. Add environment variables:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-4. Deploy!
+## 🔑 Akses yang Dibutuhkan
 
-## Customization
+Minta ke owner project:
 
-### Contact Information
-Update the WhatsApp number and email addresses in:
-- `components/Hero.tsx`
-- `components/FinalCTA.tsx`
-- `components/Footer.tsx`
+| Akses | Keterangan |
+|-------|-----------|
+| `.env.local` credentials | Supabase URL & Anon Key |
+| Supabase Dashboard | Invite via email di Settings → Team |
+| Vercel | Invite via email di Project → Settings → Members |
+| GitHub | Invite sebagai Collaborator di repo settings |
 
-### Client Logos
-Replace the placeholder logos in `components/Clients.tsx` with actual client logo images.
+---
 
-### Studio Images
-Add studio images to `public/images/` and update `components/Studios.tsx`.
+## 🌐 Deployment
 
-## License
+Project di-deploy otomatis ke Vercel setiap kali ada push ke branch `main`.
 
-Private - BIZHIVE
+```bash
+git add .
+git commit -m "feat: deskripsi perubahan"
+git push origin main
+```
+
+Vercel akan auto-build dan deploy dalam ~2 menit.
+
+**Live URL**: [bizhiveid.com](https://bizhiveid.com)
+
+---
+
+## 📊 Fitur Dashboard
+
+- **Overview** — Stats project, deadline terdekat, workload PIC
+- **Projects** — Buat & kelola project per brand + divisi (Ads, CC, Affiliate, KOL)
+- **Update Data** — Input metrik Shopee Daily, Shopee Monthly, TikTok
+- **Reports** — Filter & export data ke CSV
+- **Settings** — Manajemen brand klien
+
+---
+
+## 🔐 Login Dashboard
+
+Akses dashboard di `/dashboard`. Login menggunakan email & password yang terdaftar di Supabase Auth (dibuat oleh admin).
