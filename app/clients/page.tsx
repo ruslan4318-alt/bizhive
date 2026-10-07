@@ -4,11 +4,11 @@ import ClientsPageClient from './ClientsPageClient';
 export default async function ClientsPage() {
   const supabase = await createClient();
 
-  const { data: brands } = await supabase
-    .from('brands')
-    .select('id, name, logo_url, platform')
-    .eq('is_active', true)
+  // Baca dari tabel 'clients' yang dikelola lewat /admin/clients
+  const { data: clients } = await supabase
+    .from('clients')
+    .select('id, name, logo_url, industry')
     .order('name');
 
-  return <ClientsPageClient brands={brands || []} />;
+  return <ClientsPageClient brands={clients || []} />;
 }
