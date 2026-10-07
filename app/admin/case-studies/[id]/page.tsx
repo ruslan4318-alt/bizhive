@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 
@@ -10,8 +10,9 @@ interface Client {
   name: string;
 }
 
-export default function NewCaseStudyPage() {
+export default function EditCaseStudyPage() {
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [uploadingBefore, setUploadingBefore] = useState(false);
   const [uploadingAfter, setUploadingAfter] = useState(false);
   const [uploadingFeatured, setUploadingFeatured] = useState(false);
@@ -32,27 +33,55 @@ export default function NewCaseStudyPage() {
     is_featured: false,
   });
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
   const supabase = createClient();
 
   useEffect(() => {
     async function init() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) router.push('/admin');
-      
+      if (!user) {
+        router.push('/admin');
+        return;
+      }
+
       // Fetch clients for dropdown
-      const { data } = await supabase.from('clients').select('id, name').order('name');
-      if (data) setClients(data);
+      const { data: clientsData } = await supabase.from('clients').select('id, name').order('name');
+      if (clientsData) setClients(clientsData);
+
+      if (id) {
+        const { data, error } = await supabase
+          .from('case_studies')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error || !data) {
+          alert('Case study not found');
+          router.push('/admin/dashboard');
+          return;
+        }
+
+        setFormData({
+          title: data.title || '',
+          slug: data.slug || '',
+          client_id: data.client_id || '',
+          description: data.description || '',
+          before_value: data.before_value || '',
+          after_value: data.after_value || '',
+          growth_percentage: data.growth_percentage || '',
+          metric_type: data.metric_type || '',
+          timeline: data.timeline || '',
+          is_featured: data.is_featured || false,
+        });
+        setBeforeImageUrl(data.before_image || '');
+        setAfterImageUrl(data.after_image || '');
+        setFeaturedImageUrl(data.featured_image || '');
+      }
+      setFetching(false);
     }
     init();
-  }, []);
-
-  useEffect(() => {
-    const slug = formData.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-    setFormData(prev => ({ ...prev, slug }));
-  }, [formData.title]);
+  }, [id]);
 
   async function uploadImage(file: File, prefix: string): Promise<string | null> {
     const fileExt = file.name.split('.').pop();
@@ -121,31 +150,43 @@ export default function NewCaseStudyPage() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.from('case_studies').insert({
-        title: formData.title,
-        slug: formData.slug,
-        client_id: formData.client_id || null,
-        description: formData.description,
-        before_value: formData.before_value,
-        after_value: formData.after_value,
-        growth_percentage: formData.growth_percentage,
-        metric_type: formData.metric_type,
-        timeline: formData.timeline,
-        before_image: beforeImageUrl || null,
-        after_image: afterImageUrl || null,
-        featured_image: featuredImageUrl || null,
-        is_featured: formData.is_featured,
-      });
+      const { error } = await supabase
+        .from('case_studies')
+        .update({
+          title: formData.title,
+          slug: formData.slug,
+          client_id: formData.client_id || null,
+          description: formData.description,
+          before_value: formData.before_value,
+          after_value: formData.after_value,
+          growth_percentage: formData.growth_percentage,
+          metric_type: formData.metric_type,
+          timeline: formData.timeline,
+          before_image: beforeImageUrl || null,
+          after_image: afterImageUrl || null,
+          featured_image: featuredImageUrl || null,
+          is_featured: formData.is_featured,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', id);
 
       if (error) throw error;
 
       router.push('/admin/dashboard');
     } catch (error) {
-      alert('Error saving case study');
+      alert('Error updating case study');
       console.error(error);
     } finally {
       setLoading(false);
     }
+  }
+
+  if (fetching) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+        <div className="animate-spin w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full" />
+      </div>
+    );
   }
 
   return (
@@ -155,7 +196,7 @@ export default function NewCaseStudyPage() {
           <Link href="/admin/dashboard" className="text-slate-400 hover:text-slate-600">
             ← Back
           </Link>
-          <h1 className="text-2xl font-bold text-slate-900">Add Case Study</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Edit Case Study</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 border border-slate-200 space-y-6">
@@ -259,7 +300,7 @@ export default function NewCaseStudyPage() {
                 </div>
               )}
               <label className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-medium text-sm transition-colors">
-                {uploadingFeatured ? 'Uploading...' : 'Upload Cover'}
+                {uploadingFeatured ? 'Uploading...' : 'Change Cover'}
                 <input type="file" accept="image/*" onChange={handleFeaturedUpload} className="hidden" disabled={uploadingFeatured} />
               </label>
             </div>
@@ -355,7 +396,7 @@ export default function NewCaseStudyPage() {
               disabled={loading}
               className="flex-1 bg-amber-500 hover:bg-amber-400 disabled:bg-amber-300 text-slate-900 font-bold py-3 px-4 rounded-xl transition-colors"
             >
-              {loading ? 'Saving...' : 'Save Case Study'}
+              {loading ? 'Updating...' : 'Update Case Study'}
             </button>
             <Link
               href="/admin/dashboard"

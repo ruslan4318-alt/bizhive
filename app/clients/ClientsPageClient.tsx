@@ -21,6 +21,8 @@ export interface CaseStudyItem {
   growth_percentage?: string | null;
   metric_type?: string | null;
   timeline?: string | null;
+  before_image?: string | null;
+  after_image?: string | null;
   featured_image?: string | null;
   is_featured?: boolean;
   client?: {
@@ -74,7 +76,7 @@ export default function ClientsPageClient({ brands, caseStudies }: ClientsPageCl
         </div>
       </section>
 
-      {/* Section 1: Client Logos Grid — Dynamic dari Supabase */}
+      {/* Section 1: Client Logos Grid */}
       <section className="py-20 bg-white border-b border-slate-100 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           {brands.length === 0 ? (
@@ -122,7 +124,7 @@ export default function ClientsPageClient({ brands, caseStudies }: ClientsPageCl
         </div>
       </section>
 
-      {/* Section 2: Detailed Case Studies — Dynamic dari Supabase */}
+      {/* Section 2: Detailed Case Studies with Before & After Images */}
       <section className={styles.clientsSection}>
         <div className={styles.container}>
           <div className="text-center mb-16">
@@ -202,6 +204,38 @@ export default function ClientsPageClient({ brands, caseStudies }: ClientsPageCl
                         <p className="text-slate-700 leading-relaxed font-medium">
                           {cs.description}
                         </p>
+                      </div>
+                    )}
+
+                    {/* Before & After Images Comparison Display */}
+                    {(cs.before_image || cs.after_image) && (
+                      <div className="mb-8 grid md:grid-cols-2 gap-4">
+                        {cs.before_image && (
+                          <div className="rounded-2xl border border-slate-200 overflow-hidden bg-slate-50 flex flex-col shadow-sm">
+                            <div className="px-4 py-2.5 bg-slate-100 border-b border-slate-200 text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
+                              <span className="flex items-center gap-1.5">
+                                <span>📸</span> Before
+                              </span>
+                              <span className="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-semibold">Awal Mula</span>
+                            </div>
+                            <div className="p-3 flex items-center justify-center min-h-[200px] bg-white">
+                              <img src={cs.before_image} alt={`${cs.title} Before`} className="max-h-72 w-full object-contain rounded-lg" />
+                            </div>
+                          </div>
+                        )}
+                        {cs.after_image && (
+                          <div className="rounded-2xl border border-amber-300 overflow-hidden bg-amber-50/30 flex flex-col shadow-sm">
+                            <div className="px-4 py-2.5 bg-amber-100/70 border-b border-amber-300 text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center justify-between">
+                              <span className="flex items-center gap-1.5">
+                                <span>🚀</span> After
+                              </span>
+                              <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold">Hasil Pencapaian</span>
+                            </div>
+                            <div className="p-3 flex items-center justify-center min-h-[200px] bg-white">
+                              <img src={cs.after_image} alt={`${cs.title} After`} className="max-h-72 w-full object-contain rounded-lg" />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
