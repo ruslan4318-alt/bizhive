@@ -87,8 +87,9 @@
 }
 
 .cardImage {
-    aspect-ratio: 16/9;
+    aspect-ratio: 3/4;
     overflow: hidden;
+    background-color: #f8fafc;
 }
 
 .cardImage img {

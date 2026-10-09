@@ -85,14 +85,18 @@
     overflow: hidden;
     box-shadow: var(--shadow-xl);
     background-color: var(--color-bg-light);
+    display: flex;
+    justify-content: center;
 }
 
 .featuredImage img {
     width: 100%;
+    max-width: 650px;
     height: auto;
-    max-height: 500px;
-    object-fit: cover;
+    max-height: 700px;
+    object-fit: contain;
     display: block;
+    margin: 0 auto;
 }
 
 .imagePlaceholder {
