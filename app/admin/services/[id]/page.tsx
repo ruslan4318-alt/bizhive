@@ -145,8 +145,8 @@ export default function EditServicePage() {
       if (error) throw error;
 
       router.push('/admin/dashboard');
-    } catch (error) {
-      alert('Error updating service');
+    } catch (error: any) {
+      alert(`Error updating service: ${error?.message || error}`);
       console.error(error);
     } finally {
       setLoading(false);
