@@ -85,7 +85,7 @@ export default function Hero() {
                             transition={{ duration: 1, delay: 0.4 }}
                         >
                             <img 
-                                src="/images/headings.png" 
+                                src="/images/hero-model.png?v=2" 
                                 alt="Bizhive Marketing Excellence" 
                                 className={styles.mainImage} 
                             />
