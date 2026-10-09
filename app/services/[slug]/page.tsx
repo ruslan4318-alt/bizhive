@@ -178,22 +178,31 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
       return f;
     });
 
+    const rawGallery: string[] = Array.isArray(dbService.gallery)
+      ? dbService.gallery
+      : typeof dbService.gallery === 'string'
+      ? JSON.parse(dbService.gallery || '[]')
+      : [];
+
+    const defaultFallback = defaultServicesData[slug];
+
     serviceData = {
       title: dbService.name,
-      tagline: dbService.short_description || `Empower your brand with ${dbService.name}`,
-      category: dbService.icon === 'store' ? 'Performance' : dbService.icon === 'video' ? 'Creative' : dbService.icon === 'live' ? 'Commerce' : dbService.icon === 'users' ? 'Influencer' : 'Digital',
-      description: dbService.full_description || dbService.short_description || '',
-      features: parsedFeatures,
-      process: [
+      tagline: dbService.tagline || dbService.short_description || defaultFallback?.tagline || `Empower your brand with ${dbService.name}`,
+      category: dbService.category || (dbService.icon === 'store' ? 'Performance' : dbService.icon === 'video' ? 'Creative' : dbService.icon === 'live' ? 'Commerce' : dbService.icon === 'users' ? 'Influencer' : 'Digital'),
+      description: dbService.full_description || dbService.short_description || defaultFallback?.description || '',
+      features: parsedFeatures.length > 0 ? parsedFeatures : (defaultFallback?.features || []),
+      process: defaultFallback?.process || [
         { step: 1, title: 'Consultation', description: 'Understand your brand goals and requirements' },
         { step: 2, title: 'Strategy', description: 'Formulate a custom execution plan' },
         { step: 3, title: 'Execution', description: 'Implement with high performance and quality' },
         { step: 4, title: 'Optimization', description: 'Continuously analyze and scale results' },
       ],
-      results: [
+      results: defaultFallback?.results || [
         { number: '100', label: 'Client Satisfaction', suffix: '%' },
         { number: '2', label: 'Growth Multiplier', suffix: 'x' },
       ],
+      gallery: rawGallery,
     };
   } else if (defaultServicesData[slug]) {
     serviceData = defaultServicesData[slug];

@@ -12,6 +12,7 @@ export interface ServiceDetailData {
   features: { title: string; description: string }[];
   process: { step: number; title: string; description: string }[];
   results: { number: string; label: string; suffix?: string }[];
+  gallery?: string[];
 }
 
 interface ServiceDetailClientProps {
@@ -48,9 +49,42 @@ export default function ServiceDetailClient({ service, slug }: ServiceDetailClie
         </div>
       </section>
 
+      {/* Photo Gallery (Work Showcase) */}
+      {service.gallery && service.gallery.length > 0 && (
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <AnimatedSection>
+              <h2 className={styles.sectionTitle}>Work &amp; Portfolio Gallery</h2>
+              <p className={styles.description}>
+                Dokumentasi hasil pengerjaan, konten kreatif, dan eksekusi kampanye untuk klien kami.
+              </p>
+            </AnimatedSection>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
+              {service.gallery.map((imgUrl, index) => (
+                <div 
+                  key={index}
+                  className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 shadow-lg hover:shadow-2xl hover:border-amber-500/40 transition-all duration-300 hover:-translate-y-1.5"
+                >
+                  <img 
+                    src={imgUrl} 
+                    alt={`${service.title} Showcase ${index + 1}`} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                    <span className="text-white text-xs font-semibold tracking-wide">
+                      {service.title} Showcase #{index + 1}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Features */}
       {service.features && service.features.length > 0 && (
-        <section className={styles.section}>
+        <section className={`${styles.section} ${service.gallery && service.gallery.length > 0 ? styles.sectionLight : ''}`}>
           <div className={styles.container}>
             <AnimatedSection>
               <h2 className={styles.sectionTitle}>Key Features</h2>
@@ -70,7 +104,7 @@ export default function ServiceDetailClient({ service, slug }: ServiceDetailClie
 
       {/* Process */}
       {service.process && service.process.length > 0 && (
-        <section className={`${styles.section} ${styles.sectionLight}`}>
+        <section className={`${styles.section} ${service.gallery && service.gallery.length > 0 ? '' : styles.sectionLight}`}>
           <div className={styles.container}>
             <AnimatedSection>
               <h2 className={styles.sectionTitle}>How It Works</h2>

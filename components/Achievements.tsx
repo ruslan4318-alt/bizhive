@@ -1,105 +1,163 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatedSection } from './animations';
+import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import styles from './Achievements.module.css';
 
-const successStories = [
-    { 
-        brand: 'Beauty Brand A',
-        metric: 'Monthly Revenue',
-        before: 'Rp 150M',
-        after: 'Rp 2.1B',
-        growth: '+1,300%',
-        period: '6 months'
-    },
-    { 
-        brand: 'Fashion Brand B',
-        metric: 'Live Stream Sales',
-        before: 'Rp 5M/stream',
-        after: 'Rp 120M/stream',
-        growth: '+2,300%',
-        period: '4 months'
-    },
-    { 
-        brand: 'F&B Brand C',
-        metric: 'Order Volume',
-        before: '500 orders/day',
-        after: '8,500 orders/day',
-        growth: '+1,600%',
-        period: '8 months'
-    }
+interface CaseStudy {
+  id: string;
+  title: string;
+  brand: string;
+  metric: string;
+  before: string;
+  after: string;
+  growth: string;
+  period: string;
+  before_image?: string | null;
+  after_image?: string | null;
+}
+
+const defaultSuccessStories: CaseStudy[] = [
+  { 
+    id: '1',
+    title: 'Beauty Brand Scale',
+    brand: 'Beauty Brand A',
+    metric: 'Monthly Revenue',
+    before: 'Rp 150M',
+    after: 'Rp 2.1B',
+    growth: '+1,300%',
+    period: '6 months'
+  },
+  { 
+    id: '2',
+    title: 'Live Stream Explosion',
+    brand: 'Fashion Brand B',
+    metric: 'Live Stream Sales',
+    before: 'Rp 5M/stream',
+    after: 'Rp 120M/stream',
+    growth: '+2,300%',
+    period: '4 months'
+  },
+  { 
+    id: '3',
+    title: 'Order Volume Growth',
+    brand: 'F&B Brand C',
+    metric: 'Order Volume',
+    before: '500 orders/day',
+    after: '8,500 orders/day',
+    growth: '+1,600%',
+    period: '8 months'
+  }
 ];
 
 export default function Achievements() {
-    return (
-        <section className={styles.section} id="achievements">
-            <div className={styles.container}>
-                <AnimatedSection className={styles.header}>
-                    <p className={styles.badge}>Success Stories</p>
-                    <h2 className={styles.title}>
-                        Before & <span className={styles.titleHighlight}>After Results</span>
-                    </h2>
-                    <div className={styles.divider}></div>
-                    <p className={styles.subtitle}>
-                        Real transformations from brands we&apos;ve partnered with, showcasing the power of data-driven growth.
-                    </p>
-                </AnimatedSection>
-                
-                <div className={styles.grid}>
-                    {successStories.map((item, i) => (
-                        <motion.div 
-                            key={i}
-                            className={styles.card}
-                            whileHover={{ y: -10 }}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.1, duration: 0.5 }}
-                        >
-                            <div className={styles.cardHeader}>
-                                <span className={styles.brand}>{item.brand}</span>
-                                <span className={styles.growthBadge}>{item.growth}</span>
-                            </div>
-                            
-                            <p className={styles.metricLabel}>{item.metric}</p>
-                            
-                            <div className={styles.results}>
-                                <div className={styles.resultItem}>
-                                    <p className={styles.resultLabel}>Before</p>
-                                    <p className={styles.resultValue}>{item.before}</p>
-                                </div>
-                                <div className={styles.arrow}>
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                    </svg>
-                                </div>
-                                <div className={styles.resultItem}>
-                                    <p className={styles.resultLabel}>After</p>
-                                    <p className={styles.resultValueAfter}>{item.after}</p>
-                                </div>
-                            </div>
-                            
-                            <div className={styles.cardFooter}>
-                                <p className={styles.timeline}>Timeline: <span>{item.period}</span></p>
-                                <div className={styles.status}></div>
-                            </div>
-                        </motion.div>
-                    ))}
+  const [stories, setStories] = useState<CaseStudy[]>(defaultSuccessStories);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchCaseStudies() {
+      const { data } = await supabase
+        .from('case_studies')
+        .select('id, title, metric_type, before_value, after_value, growth_percentage, timeline, before_image, after_image, client:clients(name)')
+        .order('created_at', { ascending: false })
+        .limit(6);
+
+      if (data && data.length > 0) {
+        const mapped: CaseStudy[] = data.map((item: any) => {
+          const clientName = Array.isArray(item.client)
+            ? item.client[0]?.name
+            : item.client?.name;
+
+          return {
+            id: item.id,
+            title: item.title,
+            brand: clientName || item.title,
+            metric: item.metric_type || 'Performance Metric',
+            before: item.before_value || '-',
+            after: item.after_value || '-',
+            growth: item.growth_percentage || '+100%',
+            period: item.timeline || '3 months',
+            before_image: item.before_image,
+            after_image: item.after_image,
+          };
+        });
+        setStories(mapped);
+      }
+    }
+
+    fetchCaseStudies();
+  }, []);
+
+  return (
+    <section className={styles.section} id="achievements">
+      <div className={styles.container}>
+        <AnimatedSection className={styles.header}>
+          <p className={styles.badge}>Success Stories</p>
+          <h2 className={styles.title}>
+            Before &amp; <span className={styles.titleHighlight}>After Results</span>
+          </h2>
+          <div className={styles.divider} />
+          <p className={styles.subtitle}>
+            Real transformations from brands we&apos;ve partnered with, showcasing the power of data-driven growth.
+          </p>
+        </AnimatedSection>
+        
+        <div className={styles.grid}>
+          {stories.map((item, i) => (
+            <motion.div 
+              key={item.id || i}
+              className={styles.card}
+              whileHover={{ y: -10 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+            >
+              <div className={styles.cardHeader}>
+                <span className={styles.brand}>{item.brand}</span>
+                <span className={styles.growthBadge}>{item.growth}</span>
+              </div>
+              
+              <p className={styles.metricLabel}>{item.metric}</p>
+              
+              <div className={styles.results}>
+                <div className={styles.resultItem}>
+                  <p className={styles.resultLabel}>Before</p>
+                  <p className={styles.resultValue}>{item.before}</p>
                 </div>
-                
-                <AnimatedSection className={styles.footerActions} delay={0.3}>
-                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                        <Link href="/clients" className={styles.btnViewAll}>
-                            View Full Success Studies
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </Link>
-                    </motion.div>
-                </AnimatedSection>
-            </div>
-        </section>
-    );
+                <div className={styles.arrow}>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+                <div className={styles.resultItem}>
+                  <p className={styles.resultLabel}>After</p>
+                  <p className={styles.resultValueAfter}>{item.after}</p>
+                </div>
+              </div>
+              
+              <div className={styles.cardFooter}>
+                <p className={styles.timeline}>Timeline: <span>{item.period}</span></p>
+                <div className={styles.status} />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        
+        <AnimatedSection className={styles.footerActions} delay={0.3}>
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+            <Link href="/clients" className={styles.btnViewAll}>
+              View Full Success Stories
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </motion.div>
+        </AnimatedSection>
+      </div>
+    </section>
+  );
 }

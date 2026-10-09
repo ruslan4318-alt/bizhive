@@ -40,7 +40,14 @@ export default function FinalCTA() {
                         </div>
                         <div className={styles.contactItem}>
                             <strong>Instagram</strong>
-                            <span>@bizhive_id</span>
+                            <a 
+                                href="https://www.instagram.com/bizhiveid/" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="hover:text-amber-500 transition-colors"
+                            >
+                                @bizhiveid
+                            </a>
                         </div>
                         <div className={styles.contactItem}>
                             <strong>WhatsApp</strong>

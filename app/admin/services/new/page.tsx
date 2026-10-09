@@ -7,11 +7,13 @@ import Link from 'next/link';
 
 export default function NewServicePage() {
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
+    category: '',
+    tagline: '',
     short_description: '',
     full_description: '',
     icon: 'store',
@@ -37,32 +39,42 @@ export default function NewServicePage() {
     setFormData(prev => ({ ...prev, slug }));
   }, [formData.name]);
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  async function handleGalleryUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-    setUploading(true);
+    setUploadingGallery(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `services/${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(fileName, file);
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `services/gallery_${Date.now()}_${i}.${fileExt}`;
 
-      if (uploadError) throw uploadError;
+        const { error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(fileName, file);
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('images')
-        .getPublicUrl(fileName);
+        if (uploadError) throw uploadError;
 
-      setImageUrl(publicUrl);
-    } catch (error) {
-      alert('Error uploading image');
-      console.error(error);
+        const { data: { publicUrl } } = supabase.storage
+          .from('images')
+          .getPublicUrl(fileName);
+
+        if (publicUrl) uploadedUrls.push(publicUrl);
+      }
+
+      setGalleryUrls(prev => [...prev, ...uploadedUrls]);
+    } catch (err) {
+      alert('Error uploading gallery image');
+      console.error(err);
     } finally {
-      setUploading(false);
+      setUploadingGallery(false);
     }
+  }
+
+  function handleRemoveGalleryImage(indexToRemove: number) {
+    setGalleryUrls(prev => prev.filter((_, i) => i !== indexToRemove));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -70,7 +82,6 @@ export default function NewServicePage() {
     setLoading(true);
 
     try {
-      // Parse features from comma-separated to array
       const featuresArray = formData.features
         .split('\n')
         .map(f => f.trim())
@@ -79,11 +90,14 @@ export default function NewServicePage() {
       const { error } = await supabase.from('services').insert({
         name: formData.name,
         slug: formData.slug,
+        category: formData.category || null,
+        tagline: formData.tagline || null,
         short_description: formData.short_description,
         full_description: formData.full_description,
         icon: formData.icon,
         is_active: formData.is_active,
         features: featuresArray,
+        gallery: galleryUrls,
       });
 
       if (error) throw error;
@@ -108,7 +122,7 @@ export default function NewServicePage() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-8">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/admin/dashboard" className="text-slate-400 hover:text-slate-600">
             ← Back
@@ -117,98 +131,150 @@ export default function NewServicePage() {
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 border border-slate-200 space-y-6">
-          {/* Service Image */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Service Image (Optional)</label>
-            <div className="flex items-start gap-4">
-              {imageUrl ? (
-                <img src={imageUrl} alt="Preview" className="w-32 h-20 object-cover rounded-xl border border-slate-200" />
-              ) : (
-                <div className="w-32 h-20 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-              )}
-              <label className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-medium text-sm transition-colors">
-                {uploading ? 'Uploading...' : 'Upload Image'}
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
-              </label>
+          {/* Name & Slug */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Service Name *</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900"
+                placeholder="e.g. Shop Optimization"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Slug (URL)</label>
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-500"
+                placeholder="shop-optimization"
+              />
             </div>
           </div>
 
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Service Name *</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900"
-              placeholder="e.g. Shop Optimization"
-              required
-            />
+          {/* Category & Icon */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Category Badge</label>
+              <input
+                type="text"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900"
+                placeholder="e.g. Performance, Creative, Influencer, Commerce"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Icon</label>
+              <select
+                value={formData.icon}
+                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900"
+              >
+                {iconOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          {/* Slug */}
+          {/* Tagline */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Slug (URL)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Tagline (Header Slogan)</label>
             <input
               type="text"
-              value={formData.slug}
-              onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-500"
-              placeholder="shop-optimization"
-            />
-          </div>
-
-          {/* Icon */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Icon</label>
-            <select
-              value={formData.icon}
-              onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+              value={formData.tagline}
+              onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900"
-            >
-              {iconOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+              placeholder="e.g. Maximize your e-commerce store performance with data-driven strategies"
+            />
           </div>
 
           {/* Short Description */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Short Description</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Short Description (Cards)</label>
             <textarea
               value={formData.short_description}
               onChange={(e) => setFormData({ ...formData, short_description: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900 min-h-[80px]"
-              placeholder="Brief description shown in cards..."
+              placeholder="Brief description shown on service cards..."
             />
           </div>
 
           {/* Full Description */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Full Description</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Full Description (What We Offer)</label>
             <textarea
               value={formData.full_description}
               onChange={(e) => setFormData({ ...formData, full_description: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900 min-h-[150px]"
-              placeholder="Detailed description for the service page..."
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900 min-h-[140px]"
+              placeholder="Detailed description on the service detail page..."
             />
           </div>
 
           {/* Features */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Features (one per line)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Key Features (one per line)</label>
             <textarea
               value={formData.features}
               onChange={(e) => setFormData({ ...formData, features: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-slate-900 min-h-[120px] font-mono text-sm"
-              placeholder="Feature 1
-Feature 2
-Feature 3"
+              placeholder="Website Analysis & Audit&#10;Ads Optimization&#10;Campaign Marketing"
             />
+          </div>
+
+          {/* Work Showcase / Photo Gallery Upload Section */}
+          <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-slate-900 text-sm flex items-center gap-2">
+                  <span>📸</span> Work &amp; Portfolio Gallery
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">Upload foto hasil kerja / portofolio untuk ditampilkan di halaman service ini</p>
+              </div>
+              <label className="cursor-pointer bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-xl font-bold text-xs transition-colors shadow-sm inline-flex items-center gap-1.5">
+                <span>+</span> {uploadingGallery ? 'Uploading...' : 'Tambah Foto'}
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  multiple 
+                  onChange={handleGalleryUpload} 
+                  className="hidden" 
+                  disabled={uploadingGallery} 
+                />
+              </label>
+            </div>
+
+            {galleryUrls.length === 0 ? (
+              <div className="p-8 border-2 border-dashed border-slate-200 rounded-xl bg-white text-center">
+                <span className="text-3xl block mb-2">🖼️</span>
+                <p className="text-sm font-medium text-slate-600">Belum ada foto portofolio</p>
+                <p className="text-xs text-slate-400 mt-1">Klik tombol &quot;+ Tambah Foto&quot; di atas untuk mengunggah foto</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+                {galleryUrls.map((url, idx) => (
+                  <div key={idx} className="group relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm">
+                    <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveGalleryImage(idx)}
+                      className="absolute top-2 right-2 w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-red-600"
+                      title="Hapus foto ini"
+                    >
+                      ✕
+                    </button>
+                    <span className="absolute bottom-1.5 left-2 text-[10px] text-white/80 bg-black/50 px-1.5 py-0.5 rounded font-mono">
+                      #{idx + 1}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Active */}
