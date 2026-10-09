@@ -45,14 +45,14 @@ export default function Clients() {
                 </AnimatedSection>
                 
                 <div className="relative overflow-hidden py-10 mt-8">
-                    <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none"></div>
-                    <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none"></div>
+                    <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-100 to-transparent z-10 pointer-events-none"></div>
+                    <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-100 to-transparent z-10 pointer-events-none"></div>
                     
                     <InfiniteCarousel speed={25}>
                         {clients.map((client) => (
                             <motion.div 
                                 key={client.id} 
-                                className="flex-shrink-0 w-40 h-40 lg:w-48 lg:h-48 rounded-3xl bg-slate-50 border border-slate-100 flex items-center justify-center hover:bg-amber-50 hover:border-amber-200 transition-all cursor-pointer p-8 mx-4 shadow-sm hover:shadow-md"
+                                className="flex-shrink-0 w-40 h-40 lg:w-48 lg:h-48 rounded-3xl bg-white border border-slate-200/90 flex items-center justify-center hover:bg-amber-50/60 hover:border-amber-300 transition-all cursor-pointer p-8 mx-4 shadow-sm hover:shadow-md"
                                 whileHover={{ scale: 1.05, y: -5 }}
                                 title={client.name}
                             >
