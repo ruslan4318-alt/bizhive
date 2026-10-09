@@ -5,11 +5,16 @@ import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 
+interface GalleryItem {
+  url: string;
+  title: string;
+}
+
 export default function EditServicePage() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [uploadingGallery, setUploadingGallery] = useState(false);
-  const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -53,11 +58,21 @@ export default function EditServicePage() {
           ? (JSON.parse(data.features || '[]') as string[]).join('\n')
           : '';
 
-        const rawGallery: string[] = Array.isArray(data.gallery)
-          ? data.gallery
-          : typeof data.gallery === 'string'
-          ? JSON.parse(data.gallery || '[]')
-          : [];
+        let parsedGallery: GalleryItem[] = [];
+        if (data.gallery) {
+          const raw = Array.isArray(data.gallery)
+            ? data.gallery
+            : typeof data.gallery === 'string'
+            ? JSON.parse(data.gallery || '[]')
+            : [];
+
+          parsedGallery = raw.map((item: any) => {
+            if (typeof item === 'string') {
+              return { url: item, title: '' };
+            }
+            return { url: item.url || '', title: item.title || '' };
+          });
+        }
 
         setFormData({
           name: data.name || '',
@@ -70,7 +85,7 @@ export default function EditServicePage() {
           is_active: data.is_active !== undefined ? data.is_active : true,
           features: rawFeatures,
         });
-        setGalleryUrls(rawGallery);
+        setGalleryItems(parsedGallery);
       }
       setFetching(false);
     }
@@ -83,7 +98,7 @@ export default function EditServicePage() {
 
     setUploadingGallery(true);
     try {
-      const uploadedUrls: string[] = [];
+      const newItems: GalleryItem[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileExt = file.name.split('.').pop();
@@ -99,20 +114,35 @@ export default function EditServicePage() {
           .from('images')
           .getPublicUrl(fileName);
 
-        if (publicUrl) uploadedUrls.push(publicUrl);
+        if (publicUrl) {
+          // Format initial title from filename (removing extension)
+          const rawName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+          newItems.push({
+            url: publicUrl,
+            title: rawName,
+          });
+        }
       }
 
-      setGalleryUrls(prev => [...prev, ...uploadedUrls]);
-    } catch (err) {
-      alert('Error uploading gallery image');
+      setGalleryItems(prev => [...prev, ...newItems]);
+    } catch (err: any) {
+      alert(`Error uploading gallery image: ${err?.message || err}`);
       console.error(err);
     } finally {
       setUploadingGallery(false);
     }
   }
 
+  function handleUpdatePhotoTitle(index: number, newTitle: string) {
+    setGalleryItems(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], title: newTitle };
+      return updated;
+    });
+  }
+
   function handleRemoveGalleryImage(indexToRemove: number) {
-    setGalleryUrls(prev => prev.filter((_, i) => i !== indexToRemove));
+    setGalleryItems(prev => prev.filter((_, i) => i !== indexToRemove));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -137,7 +167,7 @@ export default function EditServicePage() {
           icon: formData.icon,
           is_active: formData.is_active,
           features: featuresArray,
-          gallery: galleryUrls,
+          gallery: galleryItems,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id);
@@ -172,7 +202,7 @@ export default function EditServicePage() {
 
   return (
     <div className="min-h-screen bg-slate-100 p-8">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/admin/dashboard" className="text-slate-400 hover:text-slate-600">
             ← Back
@@ -277,16 +307,18 @@ export default function EditServicePage() {
             />
           </div>
 
-          {/* Work Showcase / Photo Gallery Upload Section */}
+          {/* Work Showcase / Photo Gallery Upload Section with Individual Titles */}
           <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="font-semibold text-slate-900 text-sm flex items-center gap-2">
                   <span>📸</span> Work &amp; Portfolio Gallery
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">Upload foto hasil kerja / portofolio untuk ditampilkan di halaman service ini</p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Upload foto dan beri judul masing-masing untuk menjelaskan kegiatan/proyek
+                </p>
               </div>
-              <label className="cursor-pointer bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-xl font-bold text-xs transition-colors shadow-sm inline-flex items-center gap-1.5">
+              <label className="cursor-pointer bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-xl font-bold text-xs transition-colors shadow-sm inline-flex items-center justify-center gap-1.5 self-start sm:self-auto">
                 <span>+</span> {uploadingGallery ? 'Uploading...' : 'Tambah Foto'}
                 <input 
                   type="file" 
@@ -299,28 +331,47 @@ export default function EditServicePage() {
               </label>
             </div>
 
-            {galleryUrls.length === 0 ? (
+            {galleryItems.length === 0 ? (
               <div className="p-8 border-2 border-dashed border-slate-200 rounded-xl bg-white text-center">
                 <span className="text-3xl block mb-2">🖼️</span>
                 <p className="text-sm font-medium text-slate-600">Belum ada foto portofolio</p>
                 <p className="text-xs text-slate-400 mt-1">Klik tombol &quot;+ Tambah Foto&quot; di atas untuk mengunggah foto</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
-                {galleryUrls.map((url, idx) => (
-                  <div key={idx} className="group relative aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm">
-                    <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                {galleryItems.map((item, idx) => (
+                  <div 
+                    key={idx} 
+                    className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex gap-4 items-start relative group hover:border-amber-300 transition-colors"
+                  >
+                    <div className="w-28 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-100 relative">
+                      <img src={item.url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                      <span className="absolute bottom-1 left-1 text-[9px] text-white/90 bg-black/60 px-1 rounded font-mono">
+                        #{idx + 1}
+                      </span>
+                    </div>
+
+                    <div className="flex-1 space-y-1.5 min-w-0">
+                      <label className="block text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
+                        Judul / Kegiatan Foto #{idx + 1}
+                      </label>
+                      <input
+                        type="text"
+                        value={item.title}
+                        onChange={(e) => handleUpdatePhotoTitle(idx, e.target.value)}
+                        placeholder="Contoh: Sesi Live Streaming Brand X"
+                        className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 outline-none text-slate-900 bg-slate-50 focus:bg-white transition-all font-medium"
+                      />
+                    </div>
+
                     <button
                       type="button"
                       onClick={() => handleRemoveGalleryImage(idx)}
-                      className="absolute top-2 right-2 w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-red-600"
+                      className="w-7 h-7 flex-shrink-0 bg-slate-100 hover:bg-red-500 hover:text-white text-slate-400 rounded-lg flex items-center justify-center text-xs font-bold transition-colors"
                       title="Hapus foto ini"
                     >
                       ✕
                     </button>
-                    <span className="absolute bottom-1.5 left-2 text-[10px] text-white/80 bg-black/50 px-1.5 py-0.5 rounded font-mono">
-                      #{idx + 1}
-                    </span>
                   </div>
                 ))}
               </div>
