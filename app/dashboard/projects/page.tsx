@@ -1,12 +1,12 @@
 import { getAuthUser } from '@/lib/auth';
-import ProjectBoardClient from '@/components/internal/ProjectBoardClient';
+import ShopOptimizationAnalytics from '@/components/dashboard/ShopOptimizationAnalytics';
 
 export default async function DashboardProjectsPage() {
-  const user = await getAuthUser();
+  await getAuthUser();
 
   return (
     <div>
-      <ProjectBoardClient currentUser={user} />
+      <ShopOptimizationAnalytics />
     </div>
   );
 }
