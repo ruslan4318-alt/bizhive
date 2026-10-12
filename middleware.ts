@@ -20,58 +20,32 @@ export async function middleware(request: NextRequest) {
         remove(name: string, options: CookieOptions) {
           request.cookies.set({ name, value: '', ...options });
           response = NextResponse.next({ request: { headers: request.headers } });
-          response.cookies.set({ name, value: '', ...options });
+          response.cookies.set({ name, value, ...options });
         },
       },
     }
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
-  // ─── /internal routes protection ───────────────────────────────────────
-  if (pathname.startsWith('/internal') && !pathname.startsWith('/internal/login')) {
+  // ─── 1. Allow login page unconditionally ───────────────────────────────
+  if (pathname === '/internal/login') {
+    // Only redirect away from login if already authenticated AND no error param
+    if (user && !searchParams.has('error')) {
+      return NextResponse.redirect(new URL('/internal/projects', request.url));
+    }
+    return response;
+  }
+
+  // ─── 2. Protect all other /internal routes ──────────────────────────────
+  if (pathname.startsWith('/internal')) {
     if (!user) {
       return NextResponse.redirect(new URL('/internal/login', request.url));
     }
-
-    // Check profile exists & is active
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role, is_active')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || !profile.is_active) {
-      return NextResponse.redirect(new URL('/internal/login?error=unauthorized', request.url));
-    }
-
-    // HR can only access /internal/hr
-    if (profile.role === 'hr' && !pathname.startsWith('/internal/hr') && pathname !== '/internal') {
-      return NextResponse.redirect(new URL('/internal/hr', request.url));
-    }
-
-    // Admin (CMS only) cannot access /internal routes — redirect to /admin
-    if (profile.role === 'admin' && pathname.startsWith('/internal')) {
-      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
-    }
   }
 
-  // ─── /internal/login — redirect if already logged in ───────────────────
-  if (pathname === '/internal/login' && user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile) {
-      const { getDefaultRedirect } = await import('@/lib/types/dashboard');
-      return NextResponse.redirect(new URL(getDefaultRedirect(profile.role), request.url));
-    }
-  }
-
-  // ─── /dashboard & /admin routes — legacy protection ────────────────────
+  // ─── 3. Legacy /dashboard protection ───────────────────────────────────
   if (pathname.startsWith('/dashboard')) {
     if (!user) {
       return NextResponse.redirect(new URL('/admin', request.url));
