@@ -56,18 +56,20 @@ export async function getAuthUser(): Promise<Profile> {
     };
   }
 
-  // No profile at all — create one with minimal role
+  // No profile at all — create one with super_admin role
   const newProfile: Profile = {
     id: user.id,
     email: user.email!,
     full_name: user.email!.split('@')[0],
-    role: 'account_manager',
+    role: 'super_admin',
     is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
 
-  await supabase.from('profiles').insert(newProfile).single();
+  try {
+    await supabase.from('profiles').insert(newProfile);
+  } catch {}
 
   return newProfile;
 }

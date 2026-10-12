@@ -10,9 +10,9 @@ export default function ClientLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const isAdminPage = pathname?.startsWith('/admin');
+    const isDashboardOrAdmin = pathname?.startsWith('/admin') || pathname?.startsWith('/dashboard') || pathname?.startsWith('/internal');
 
-    if (isAdminPage) {
+    if (isDashboardOrAdmin) {
         return <>{children}</>;
     }
 
