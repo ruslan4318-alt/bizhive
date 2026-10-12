@@ -28,7 +28,6 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // If user is not logged in, redirect to login
   if (!user) {
     return NextResponse.redirect(new URL('/internal/login', request.url));
   }
@@ -38,8 +37,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Protect everything under /internal EXCEPT /internal/login
-    '/internal/((?!login).*)',
+    '/internal/projects/:path*',
+    '/internal/brands/:path*',
+    '/internal/hr/:path*',
+    '/internal/settings/:path*',
     '/dashboard/:path*',
   ],
 };
