@@ -1,9 +1,9 @@
 import { getInternalUser } from '@/lib/auth';
 import { canAccessProjects } from '@/lib/types/dashboard';
 import { redirect } from 'next/navigation';
-import ProjectBoardClient from '@/components/internal/ProjectBoardClient';
+import ShopOptimizationAnalytics from '@/components/dashboard/ShopOptimizationAnalytics';
 
-export default async function ProjectsPage() {
+export default async function InternalProjectsPage() {
   const user = await getInternalUser();
 
   if (!canAccessProjects(user.role)) {
@@ -12,7 +12,7 @@ export default async function ProjectsPage() {
 
   return (
     <div>
-      <ProjectBoardClient currentUser={user} />
+      <ShopOptimizationAnalytics />
     </div>
   );
 }

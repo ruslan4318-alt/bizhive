@@ -8,50 +8,55 @@ import { createClient } from '@/lib/supabase/client';
 import type { Profile } from '@/lib/types/dashboard';
 import { ROLE_LABELS, ROLE_COLORS } from '@/lib/types/dashboard';
 
-// ─── Menu definitions per module ──────────────────────────────────────────────
+// ─── Menu definitions per module (Service-Based) ──────────────────────────────
 
 const MODULE_MENUS = {
-  projects: [
-    { href: '/internal/projects',          label: 'Overview',     icon: '📊' },
-    { href: '/internal/projects/all',      label: 'All Projects', icon: '🗂️' },
-    { href: '/internal/projects/new',      label: 'New Project',  icon: '➕' },
-    { href: '/internal/projects/timeline', label: 'Timeline',     icon: '📅' },
-    { href: '/internal/projects/my-tasks', label: 'My Tasks',     icon: '🔔' },
+  shop_opt: [
+    { href: '/internal/projects',                  label: 'Analytics & ROAS',   icon: '📈' },
+    { href: '/dashboard/update',                   label: 'Input Data Harian',  icon: '📥' },
+    { href: '/dashboard/reports',                  label: 'Monthly Reports',    icon: '📄' },
+    { href: '/internal/brands',                    label: 'Brand Directory',    icon: '🏷️' },
+  ],
+  live_streaming: [
+    { href: '/internal/services/live-streaming',   label: 'Live Operations',    icon: '🎥' },
+    { href: '/internal/services/live-streaming',   label: 'Host Leaderboard',   icon: '🏆' },
+    { href: '/internal/services/live-streaming',   label: 'Shift & Studio',     icon: '🕒' },
+  ],
+  content: [
+    { href: '/internal/services/content-production', label: 'Content Pipeline', icon: '🎬' },
+    { href: '/internal/services/content-production', label: 'Video Outputs',    icon: '📹' },
+    { href: '/internal/services/content-production', label: 'Engagement Stats', icon: '📊' },
+  ],
+  kol: [
+    { href: '/internal/services/affiliate-kol',    label: 'Creator Network',    icon: '🤝' },
+    { href: '/internal/services/affiliate-kol',    label: 'Affiliate Sales',    icon: '🛍️' },
+    { href: '/internal/services/affiliate-kol',    label: 'Sample Tracking',    icon: '📦' },
   ],
   brands: [
-    { href: '/internal/brands',            label: 'Overview',     icon: '🏠' },
-    { href: '/internal/brands/all',        label: 'All Brands',   icon: '🏷️' },
-    { href: '/internal/brands/new',        label: 'Add Brand',    icon: '➕' },
-    { href: '/internal/brands/export',     label: 'Export',       icon: '📤' },
+    { href: '/internal/brands',                    label: 'Overview',           icon: '🏠' },
+    { href: '/dashboard/settings/brands',          label: 'Kelola Brand',       icon: '🏷️' },
   ],
   hr: [
-    { href: '/internal/hr',                label: 'Overview',     icon: '🏠' },
-    { href: '/internal/hr/team',           label: 'Team',         icon: '👤' },
-    { href: '/internal/hr/attendance',     label: 'Attendance',   icon: '🗓️' },
-    { href: '/internal/hr/tasks',          label: 'Task Board',   icon: '📝' },
-    { href: '/internal/hr/settings',       label: 'Settings',     icon: '⚙️' },
-  ],
-  admin: [
-    { href: '/admin/dashboard',            label: 'Dashboard',    icon: '🏠' },
-    { href: '/admin/news',                 label: 'News',         icon: '📰' },
-    { href: '/admin/clients',              label: 'Clients',      icon: '👥' },
-    { href: '/admin/services',             label: 'Services',     icon: '🛠️' },
-    { href: '/admin/case-studies',         label: 'Case Studies', icon: '🎯' },
+    { href: '/internal/hr',                        label: 'Overview SDM',       icon: '🏠' },
+    { href: '/internal/hr/team',                   label: 'Daftar Karyawan',    icon: '👤' },
+    { href: '/internal/hr/attendance',             label: 'Presensi & Shift',   icon: '🗓️' },
+    { href: '/internal/hr/tasks',                  label: 'Penugasan Staf',     icon: '📝' },
   ],
   settings: [
-    { href: '/internal/settings/users',   label: 'Users',        icon: '👤' },
-    { href: '/internal/settings/roles',   label: 'Roles',        icon: '🔑' },
+    { href: '/internal/settings/users',           label: 'User Management',    icon: '👤' },
   ],
 };
 
 type ModuleKey = keyof typeof MODULE_MENUS;
 
 function getActiveModule(pathname: string): ModuleKey {
+  if (pathname.startsWith('/internal/services/live-streaming')) return 'live_streaming';
+  if (pathname.startsWith('/internal/services/content-production')) return 'content';
+  if (pathname.startsWith('/internal/services/affiliate-kol')) return 'kol';
   if (pathname.startsWith('/internal/brands')) return 'brands';
-  if (pathname.startsWith('/internal/hr'))     return 'hr';
+  if (pathname.startsWith('/internal/hr')) return 'hr';
   if (pathname.startsWith('/internal/settings')) return 'settings';
-  if (pathname.startsWith('/admin'))           return 'admin';
-  return 'projects';
+  return 'shop_opt';
 }
 
 interface InternalNavProps {
@@ -75,28 +80,21 @@ export default function InternalNav({ user }: InternalNavProps) {
   };
 
   const isActive = (href: string) => {
-    if (href === '/internal/projects' || href === '/internal/brands' || href === '/internal/hr') {
-      return pathname === href;
-    }
-    return pathname.startsWith(href);
+    return pathname === href;
   };
 
-  // Which top nav items to show based on role
+  // Top navigation service switcher (Decoupled completely from CMS)
   const topModules = [
-    ...(user.role !== 'admin' && user.role !== 'hr'
-      ? [{ key: 'projects', label: 'Projects', href: '/internal/projects' }]
-      : []),
-    ...(user.role !== 'admin' && user.role !== 'hr'
-      ? [{ key: 'brands', label: 'Brands', href: '/internal/brands' }]
-      : []),
+    { key: 'shop_opt', label: '🛒 Shop Optimization', href: '/internal/projects' },
+    { key: 'live_streaming', label: '🎥 Live Streaming', href: '/internal/services/live-streaming' },
+    { key: 'content', label: '🎬 Content', href: '/internal/services/content-production' },
+    { key: 'kol', label: '🤝 KOL & Affiliate', href: '/internal/services/affiliate-kol' },
+    { key: 'brands', label: '🏷️ Brands', href: '/internal/brands' },
     ...(user.role === 'hr' || user.role === 'super_admin'
-      ? [{ key: 'hr', label: 'SDM / HR', href: '/internal/hr' }]
-      : []),
-    ...(user.role === 'super_admin' || user.role === 'admin'
-      ? [{ key: 'admin', label: 'CMS', href: '/admin/dashboard' }]
+      ? [{ key: 'hr', label: '👥 SDM / HR', href: '/internal/hr' }]
       : []),
     ...(user.role === 'super_admin'
-      ? [{ key: 'settings', label: 'Settings', href: '/internal/settings/users' }]
+      ? [{ key: 'settings', label: '⚙️ Settings', href: '/internal/settings/users' }]
       : []),
   ];
 
@@ -120,19 +118,22 @@ export default function InternalNav({ user }: InternalNavProps) {
         {/* Logo */}
         <Link href="/internal/projects" className="flex items-center gap-2.5 mr-2">
           <Image src="/images/logo-bizhive.png" alt="BIZHIVE" width={28} height={28} className="w-7 h-7 object-contain" />
-          <span className="text-white font-bold text-sm hidden sm:block">BIZHIVE</span>
+          <div className="hidden sm:block">
+            <span className="text-white font-bold text-sm block leading-tight">BIZHIVE</span>
+            <span className="text-[9px] text-amber-400 font-semibold tracking-wider uppercase block">Operations Hub</span>
+          </div>
         </Link>
 
-        {/* Module tabs */}
-        <nav className="hidden lg:flex items-center gap-1 flex-1">
+        {/* Module / Service Tabs */}
+        <nav className="hidden lg:flex items-center gap-1 flex-1 overflow-x-auto py-1">
           {topModules.map((mod) => (
             <Link
               key={mod.key}
               href={mod.href}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                 activeModule === mod.key
-                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/80'
               }`}
             >
               {mod.label}
@@ -140,17 +141,17 @@ export default function InternalNav({ user }: InternalNavProps) {
           ))}
         </nav>
 
-        {/* User menu */}
-        <div className="ml-auto relative">
+        {/* User profile dropdown (NO CMS LINK) */}
+        <div className="ml-auto relative flex-shrink-0">
           <button
             onClick={() => setUserMenuOpen(!userMenuOpen)}
             className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors text-left"
           >
-            <div className="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-xs flex-shrink-0">
+            <div className="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-xs flex-shrink-0">
               {user.full_name?.charAt(0).toUpperCase() || 'U'}
             </div>
             <div className="hidden sm:block">
-              <p className="text-white text-xs font-medium leading-tight">{user.full_name}</p>
+              <p className="text-white text-xs font-semibold leading-tight">{user.full_name}</p>
               <p className="text-slate-500 text-[10px]">{ROLE_LABELS[user.role]}</p>
             </div>
             <svg className="w-3.5 h-3.5 text-slate-500 hidden sm:block" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -161,22 +162,19 @@ export default function InternalNav({ user }: InternalNavProps) {
           {userMenuOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-              <div className="absolute right-0 top-full mt-1 w-52 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl py-1.5 z-50">
-                {/* Role badge */}
+              <div className="absolute right-0 top-full mt-1.5 w-52 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl py-1.5 z-50">
                 <div className="px-3 py-2 border-b border-slate-700 mb-1">
-                  <p className="text-white text-sm font-medium">{user.full_name}</p>
-                  <span className={`inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${roleColor}`}>
+                  <p className="text-white text-xs font-semibold">{user.full_name}</p>
+                  <p className="text-slate-400 text-[10px] truncate">{user.email}</p>
+                  <span className={`inline-block mt-1 text-[9px] font-semibold px-2 py-0.5 rounded-full border ${roleColor}`}>
                     {ROLE_LABELS[user.role]}
                   </span>
                 </div>
-                <a href="/" className="block px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
-                  🌐 Website Publik
-                </a>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-slate-700 transition-colors"
+                  className="w-full text-left px-3 py-2 text-xs text-red-400 hover:text-red-300 hover:bg-slate-700 transition-colors flex items-center gap-2"
                 >
-                  Keluar
+                  <span>🚪</span> Keluar (Logout)
                 </button>
               </div>
             </>
@@ -200,27 +198,29 @@ export default function InternalNav({ user }: InternalNavProps) {
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         {/* Module label */}
-        <div className="px-4 py-3 border-b border-slate-800">
+        <div className="px-4 py-3 border-b border-slate-800 bg-slate-950/30">
           <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-            {activeModule === 'projects' && 'Project Tracker'}
-            {activeModule === 'brands' && 'Brand Report'}
-            {activeModule === 'hr' && 'SDM / HR'}
-            {activeModule === 'admin' && 'CMS Website'}
-            {activeModule === 'settings' && 'Settings'}
+            {activeModule === 'shop_opt' && '🛒 Shop Optimization'}
+            {activeModule === 'live_streaming' && '🎥 Live Streaming'}
+            {activeModule === 'content' && '🎬 Content Production'}
+            {activeModule === 'kol' && '🤝 KOL & Affiliate'}
+            {activeModule === 'brands' && '🏷️ Brand Directory'}
+            {activeModule === 'hr' && '👥 SDM / HR Management'}
+            {activeModule === 'settings' && '⚙️ Settings'}
           </p>
         </div>
 
         {/* Nav items */}
         <nav className="px-2 py-3 space-y-0.5">
-          {sidebarItems.map((item) => (
+          {sidebarItems.map((item, idx) => (
             <Link
-              key={item.href}
+              key={idx}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
               className={`
-                flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
+                flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all
                 ${isActive(item.href)
-                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }
               `}
@@ -232,18 +232,18 @@ export default function InternalNav({ user }: InternalNavProps) {
         </nav>
 
         {/* Mobile: module switcher at bottom */}
-        <div className="lg:hidden absolute bottom-0 left-0 right-0 border-t border-slate-800 p-2">
-          <p className="text-[10px] text-slate-600 px-2 mb-1.5 font-semibold uppercase tracking-wider">Switch Module</p>
-          <div className="space-y-0.5">
+        <div className="lg:hidden absolute bottom-0 left-0 right-0 border-t border-slate-800 p-2 bg-slate-950">
+          <p className="text-[10px] text-slate-500 px-2 mb-1.5 font-bold uppercase tracking-wider">Pilih Servis</p>
+          <div className="space-y-0.5 max-h-48 overflow-y-auto">
             {topModules.map((mod) => (
               <Link
                 key={mod.key}
                 href={mod.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all ${
                   activeModule === mod.key
-                    ? 'bg-amber-500/10 text-amber-400'
-                    : 'text-slate-500 hover:text-white hover:bg-slate-800'
+                    ? 'bg-amber-500/15 text-amber-400 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
               >
                 {mod.label}
