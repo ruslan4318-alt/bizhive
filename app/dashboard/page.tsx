@@ -3,6 +3,7 @@ import { getAuthUser } from '@/lib/auth';
 import Link from 'next/link';
 import { STATUS_CONFIG } from '@/lib/types/dashboard';
 import type { ProjectStatus } from '@/lib/types/dashboard';
+import { Icons } from '@/components/ui/Icons';
 
 export default async function DashboardOverviewPage() {
   const user = await getAuthUser();
@@ -108,7 +109,10 @@ export default async function DashboardOverviewPage() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Upcoming Deadlines */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-white mb-4">⏰ Deadline Terdekat</h2>
+          <div className="flex items-center gap-2 mb-4 text-white font-semibold text-base">
+            <Icons.Clock className="text-amber-400" size={18} />
+            <span>Deadline Terdekat</span>
+          </div>
           {upcomingDeadlines.length === 0 ? (
             <p className="text-slate-500 text-sm">Tidak ada deadline dalam 14 hari ke depan</p>
           ) : (
@@ -143,7 +147,10 @@ export default async function DashboardOverviewPage() {
 
         {/* PIC Workload */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-white mb-4">👤 Workload PIC</h2>
+          <div className="flex items-center gap-2 mb-4 text-white font-semibold text-base">
+            <Icons.Users className="text-blue-400" size={18} />
+            <span>Workload PIC</span>
+          </div>
           {Object.keys(picWorkload).length === 0 ? (
             <p className="text-slate-500 text-sm">Belum ada data PIC</p>
           ) : (
@@ -176,7 +183,10 @@ export default async function DashboardOverviewPage() {
       {/* Recent Projects with Alerts */}
       {alertProjects.length > 0 && (
         <div className="bg-slate-900 border border-orange-500/20 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-orange-400 mb-4">⚠️ Project Perlu Perhatian</h2>
+          <div className="flex items-center gap-2 mb-4 text-orange-400 font-semibold text-base">
+            <Icons.AlertCircle size={18} />
+            <span>Project Perlu Perhatian</span>
+          </div>
           <div className="space-y-3">
             {alertProjects.slice(0, 5).map((p) => {
               const statusConfig = STATUS_CONFIG[p.status as ProjectStatus];

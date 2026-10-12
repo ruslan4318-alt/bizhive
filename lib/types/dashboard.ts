@@ -2,14 +2,17 @@
 // Replaces old 3-role system (admin / spv / regular)
 
 // ============================================
-// User & Auth Types
+// User & Auth Types (3 Clean Roles: Member, Manajer, Admin)
 // ============================================
 export type UserRole =
-  | 'super_admin'
+  | 'member'
+  | 'manajer'
   | 'admin'
-  | 'project_manager'
-  | 'account_manager'
-  | 'hr';
+  | 'super_admin'       // backward compat alias for admin
+  | 'project_manager'   // backward compat alias for manajer
+  | 'account_manager'   // backward compat alias for member
+  | 'hr'                // backward compat
+  | 'regular';          // backward compat
 
 export interface Profile {
   id: string;
@@ -23,64 +26,72 @@ export interface Profile {
   updated_at: string;
 }
 
-// Alias yang dipakai di seluruh app (backward compat)
+// Alias yang dipakai di seluruh app
 export type DashboardUser = Profile;
 
-// Role helpers
-export const ROLE_LABELS: Record<UserRole, string> = {
-  super_admin: 'Super Admin',
-  admin: 'Admin CMS',
-  project_manager: 'Project Manager',
-  account_manager: 'Account Manager',
+export const ROLE_LABELS: Record<string, string> = {
+  member: 'Member (Staf)',
+  manajer: 'Manajer (Lead)',
+  admin: 'Admin (Super)',
+  super_admin: 'Admin (Super)',
+  project_manager: 'Manajer (Lead)',
+  account_manager: 'Member (Staf)',
+  regular: 'Member (Staf)',
   hr: 'HR / SDM',
 };
 
-export const ROLE_COLORS: Record<UserRole, string> = {
-  super_admin: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
-  admin: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-  project_manager: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-  account_manager: 'text-green-400 bg-green-500/10 border-green-500/20',
-  hr: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
+export const ROLE_COLORS: Record<string, string> = {
+  admin: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  super_admin: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  manajer: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+  project_manager: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+  member: 'text-slate-300 bg-slate-800 border-slate-700',
+  account_manager: 'text-slate-300 bg-slate-800 border-slate-700',
+  regular: 'text-slate-300 bg-slate-800 border-slate-700',
+  hr: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
 };
 
-// Permission helpers
-export function canAccessCMS(role: UserRole): boolean {
-  return role === 'super_admin' || role === 'admin';
+// Clean Permission Helpers
+export function isSystemAdmin(role: UserRole): boolean {
+  return role === 'admin' || role === 'super_admin';
 }
 
-export function canAccessProjects(role: UserRole): boolean {
-  return role === 'super_admin' || role === 'project_manager' || role === 'account_manager';
-}
-
-export function canAccessAllProjects(role: UserRole): boolean {
-  return role === 'super_admin' || role === 'project_manager';
-}
-
-export function canAccessBrands(role: UserRole): boolean {
-  return role === 'super_admin' || role === 'project_manager' || role === 'account_manager';
-}
-
-export function canAccessHR(role: UserRole): boolean {
-  return role === 'super_admin' || role === 'hr';
+export function isManagerOrAbove(role: UserRole): boolean {
+  return role === 'manajer' || role === 'admin' || role === 'super_admin' || role === 'project_manager';
 }
 
 export function canManageUsers(role: UserRole): boolean {
-  return role === 'super_admin';
+  return isSystemAdmin(role);
 }
 
-// Default redirect per role setelah login
+export function canAssignTasks(role: UserRole): boolean {
+  return isManagerOrAbove(role);
+}
+
+export function canAccessProjects(role: UserRole): boolean {
+  return true; // All 3 roles can access projects (filtered by permission)
+}
+
+export function canAccessBrands(role: UserRole): boolean {
+  return true;
+}
+
+export function canAccessHR(role: UserRole): boolean {
+  return role === 'super_admin' || role === 'hr' || role === 'admin';
+}
+
+// Default redirect per role setelah login internal
 export function getDefaultRedirect(role: UserRole): string {
   switch (role) {
-    case 'super_admin':
-    case 'project_manager':
-    case 'account_manager':
-      return '/internal/projects';
     case 'admin':
-      return '/admin/dashboard';
-    case 'hr':
-      return '/internal/hr';
+    case 'super_admin':
+    case 'manajer':
+    case 'project_manager':
+    case 'member':
+    case 'account_manager':
+      return '/dashboard/projects';
     default:
-      return '/internal';
+      return '/dashboard';
   }
 }
 

@@ -57,12 +57,14 @@ interface TikTokRecord {
   note?: string;
 }
 
+import { Icons } from '@/components/ui/Icons';
+
 type ReportType = 'shopee-daily' | 'shopee-monthly' | 'tiktok';
 
-const REPORT_TYPES = [
-  { key: 'shopee-daily' as ReportType, label: 'Shopee Daily Report', icon: '📊' },
-  { key: 'shopee-monthly' as ReportType, label: 'Shopee Monthly Report', icon: '📅' },
-  { key: 'tiktok' as ReportType, label: 'TikTok Report', icon: '🎵' },
+const REPORT_TYPES: { key: ReportType; label: string }[] = [
+  { key: 'shopee-daily', label: 'Shopee Daily Report' },
+  { key: 'shopee-monthly', label: 'Shopee Monthly Report' },
+  { key: 'tiktok', label: 'TikTok Ads Report' },
 ];
 
 export default function ReportsClient() {
@@ -214,7 +216,10 @@ export default function ReportsClient() {
 
       {/* Filters */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-5">
-        <h2 className="text-lg font-semibold text-white">🔍 Filter Report</h2>
+        <div className="flex items-center gap-2 mb-1 text-white font-semibold text-base">
+          <Icons.Filter className="text-amber-400" size={18} />
+          <span>Filter Report</span>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-5">
           <div>
@@ -244,7 +249,7 @@ export default function ReportsClient() {
               className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white focus:border-amber-500 outline-none transition-all"
             >
               {REPORT_TYPES.map(t => (
-                <option key={t.key} value={t.key}>{t.icon} {t.label}</option>
+                <option key={t.key} value={t.key}>{t.label}</option>
               ))}
             </select>
           </div>
@@ -299,16 +304,17 @@ export default function ReportsClient() {
           <button
             onClick={generateReport}
             disabled={!selectedProject || generating}
-            className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:bg-slate-700 disabled:text-slate-500 text-slate-900 font-bold transition-colors text-sm"
+            className="px-6 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:bg-slate-700 disabled:text-slate-500 text-slate-900 font-semibold transition-colors text-sm"
           >
-            {generating ? '⏳ Generating...' : '📊 Generate Report'}
+            {generating ? 'Generating...' : 'Generate Report'}
           </button>
           {reportData && (
             <button
               onClick={exportToCSV}
-              className="px-6 py-3 rounded-xl bg-green-500/10 hover:bg-green-500/20 text-green-400 font-semibold transition-colors text-sm border border-green-500/20"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold transition-colors text-sm border border-slate-700"
             >
-              📥 Export CSV
+              <Icons.Download size={15} />
+              <span>Export CSV</span>
             </button>
           )}
         </div>

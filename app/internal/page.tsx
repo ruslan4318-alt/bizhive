@@ -9,5 +9,5 @@ export default async function InternalIndexPage() {
     redirect('/internal/login');
   }
 
-  redirect('/internal/projects');
+  redirect('/dashboard/projects');
 }

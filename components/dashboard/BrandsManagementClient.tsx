@@ -185,7 +185,7 @@ export default function BrandsManagementClient() {
       {showForm && (
         <div className="bg-slate-900 border border-amber-500/20 rounded-xl p-6 space-y-5">
           <h2 className="text-lg font-semibold text-white">
-            {editingId ? '✏️ Edit Brand' : '✨ Brand Baru'}
+            {editingId ? 'Edit Brand' : 'Brand Baru'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid md:grid-cols-2 gap-5">

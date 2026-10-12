@@ -46,14 +46,16 @@ export default function InternalLoginPage() {
 
       // Redirect by role
       const redirectMap: Record<string, string> = {
-        super_admin: '/internal/projects',
-        project_manager: '/internal/projects',
-        account_manager: '/internal/projects',
-        admin: '/admin/dashboard',
-        hr: '/internal/hr',
+        member: '/dashboard/projects',
+        manajer: '/dashboard/projects',
+        admin: '/dashboard/projects',
+        super_admin: '/dashboard/projects',
+        project_manager: '/dashboard/projects',
+        account_manager: '/dashboard/projects',
+        hr: '/dashboard',
       };
 
-      router.push(redirectMap[profile.role] ?? '/internal');
+      router.push(redirectMap[profile.role] ?? '/dashboard');
       router.refresh();
     } catch {
       setError('Terjadi kesalahan. Coba lagi.');
