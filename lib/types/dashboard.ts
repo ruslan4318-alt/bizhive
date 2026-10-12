@@ -1,19 +1,87 @@
-// TypeScript types for the BIZHIVE Internal Dashboard
+// TypeScript types — Updated for 5-role internal system
+// Replaces old 3-role system (admin / spv / regular)
 
 // ============================================
 // User & Auth Types
 // ============================================
-export type UserRole = 'admin' | 'spv' | 'regular';
+export type UserRole =
+  | 'super_admin'
+  | 'admin'
+  | 'project_manager'
+  | 'account_manager'
+  | 'hr';
 
-export interface DashboardUser {
+export interface Profile {
   id: string;
-  email: string;
   full_name: string;
+  email: string;
   role: UserRole;
+  department?: string;
   avatar_url?: string;
   is_active: boolean;
   created_at: string;
-  updated_at?: string;
+  updated_at: string;
+}
+
+// Alias yang dipakai di seluruh app (backward compat)
+export type DashboardUser = Profile;
+
+// Role helpers
+export const ROLE_LABELS: Record<UserRole, string> = {
+  super_admin: 'Super Admin',
+  admin: 'Admin CMS',
+  project_manager: 'Project Manager',
+  account_manager: 'Account Manager',
+  hr: 'HR / SDM',
+};
+
+export const ROLE_COLORS: Record<UserRole, string> = {
+  super_admin: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+  admin: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+  project_manager: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  account_manager: 'text-green-400 bg-green-500/10 border-green-500/20',
+  hr: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
+};
+
+// Permission helpers
+export function canAccessCMS(role: UserRole): boolean {
+  return role === 'super_admin' || role === 'admin';
+}
+
+export function canAccessProjects(role: UserRole): boolean {
+  return role === 'super_admin' || role === 'project_manager' || role === 'account_manager';
+}
+
+export function canAccessAllProjects(role: UserRole): boolean {
+  return role === 'super_admin' || role === 'project_manager';
+}
+
+export function canAccessBrands(role: UserRole): boolean {
+  return role === 'super_admin' || role === 'project_manager' || role === 'account_manager';
+}
+
+export function canAccessHR(role: UserRole): boolean {
+  return role === 'super_admin' || role === 'hr';
+}
+
+export function canManageUsers(role: UserRole): boolean {
+  return role === 'super_admin';
+}
+
+// Default redirect per role setelah login
+export function getDefaultRedirect(role: UserRole): string {
+  switch (role) {
+    case 'super_admin':
+    case 'project_manager':
+    case 'account_manager':
+      return '/internal/projects';
+    case 'admin':
+      return '/admin/dashboard';
+    case 'hr':
+      return '/internal/hr';
+    default:
+      return '/internal';
+  }
 }
 
 // ============================================
@@ -115,13 +183,12 @@ export interface ShopeeDailyFormData {
   direct_gmv: number;
 }
 
-// Calculated fields (not stored, computed on display)
 export interface ShopeeDailyCalculated extends ShopeeDailyMetrics {
-  ctr: number;      // clicks / impressions * 100
-  cpc: number;      // expense / clicks
-  roas: number;     // direct_gmv / expense
-  cost_per_purchase: number; // expense / conversions
-  cr: number;       // conversions / clicks * 100
+  ctr: number;
+  cpc: number;
+  roas: number;
+  cost_per_purchase: number;
+  cr: number;
 }
 
 // ============================================
@@ -132,7 +199,7 @@ export type HealthStatus = 'sangat_baik' | 'baik' | 'perlu_perbaikan';
 export interface ShopeeMonthly {
   id: string;
   project_id: string;
-  month_year: string; // '2026-08'
+  month_year: string;
   placed_order: number;
   confirmed_order: number;
   roi_target?: number;
@@ -210,27 +277,27 @@ export interface WorkloadItem {
 // Utility: Status labels & colors
 // ============================================
 export const STATUS_CONFIG: Record<ProjectStatus, { label: string; color: string; bgColor: string }> = {
-  hold: { label: 'Hold', color: 'text-gray-600', bgColor: 'bg-gray-100' },
-  ongoing: { label: 'On Going', color: 'text-blue-600', bgColor: 'bg-blue-100' },
-  review: { label: 'Review', color: 'text-amber-600', bgColor: 'bg-amber-100' },
-  revisi: { label: 'Revisi', color: 'text-orange-600', bgColor: 'bg-orange-100' },
-  done: { label: 'Done', color: 'text-green-600', bgColor: 'bg-green-100' },
+  hold:    { label: 'Hold',     color: 'text-gray-600',   bgColor: 'bg-gray-100' },
+  ongoing: { label: 'On Going', color: 'text-blue-600',   bgColor: 'bg-blue-100' },
+  review:  { label: 'Review',   color: 'text-amber-600',  bgColor: 'bg-amber-100' },
+  revisi:  { label: 'Revisi',   color: 'text-orange-600', bgColor: 'bg-orange-100' },
+  done:    { label: 'Done',     color: 'text-green-600',  bgColor: 'bg-green-100' },
 };
 
 export const DIVISION_LABELS: Record<DivisionType, string> = {
-  ads: 'Ads',
+  ads:             'Ads',
   content_creator: 'Content Creator',
-  affiliate: 'Affiliate',
-  kol: 'KOL',
+  affiliate:       'Affiliate',
+  kol:             'KOL',
 };
 
 export const AD_TYPE_LABELS: Record<AdType, string> = {
   product_ads: 'Product Ads',
-  shop_ads: 'Shop Ads',
+  shop_ads:    'Shop Ads',
 };
 
 export const HEALTH_STATUS_LABELS: Record<HealthStatus, string> = {
-  sangat_baik: 'Sangat Baik',
-  baik: 'Baik',
-  perlu_perbaikan: 'Perlu Perbaikan',
+  sangat_baik:      'Sangat Baik',
+  baik:             'Baik',
+  perlu_perbaikan:  'Perlu Perbaikan',
 };
