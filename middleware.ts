@@ -27,29 +27,10 @@ export async function middleware(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const { pathname, searchParams } = request.nextUrl;
 
-  // ─── 1. Allow login page unconditionally ───────────────────────────────
-  if (pathname === '/internal/login') {
-    // Only redirect away from login if already authenticated AND no error param
-    if (user && !searchParams.has('error')) {
-      return NextResponse.redirect(new URL('/internal/projects', request.url));
-    }
-    return response;
-  }
-
-  // ─── 2. Protect all other /internal routes ──────────────────────────────
-  if (pathname.startsWith('/internal')) {
-    if (!user) {
-      return NextResponse.redirect(new URL('/internal/login', request.url));
-    }
-  }
-
-  // ─── 3. Legacy /dashboard protection ───────────────────────────────────
-  if (pathname.startsWith('/dashboard')) {
-    if (!user) {
-      return NextResponse.redirect(new URL('/admin', request.url));
-    }
+  // If user is not logged in, redirect to login
+  if (!user) {
+    return NextResponse.redirect(new URL('/internal/login', request.url));
   }
 
   return response;
@@ -57,7 +38,8 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/internal/:path*',
+    // Protect everything under /internal EXCEPT /internal/login
+    '/internal/((?!login).*)',
     '/dashboard/:path*',
   ],
 };
