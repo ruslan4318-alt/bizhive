@@ -37,7 +37,7 @@ export default function DashboardNav({ user }: DashboardNavProps) {
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push('/admin');
+    router.push('/internal/login');
     router.refresh();
   };
 

@@ -16,7 +16,7 @@ export async function getAuthUser(): Promise<Profile> {
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    redirect('/admin');
+    redirect('/internal/login');
   }
 
   // Try profiles table first (new role system)
