@@ -13,6 +13,15 @@ export const metadata: Metadata = {
         type: 'website',
         locale: 'id_ID',
     },
+    icons: {
+        icon: [
+            { url: '/favicon.ico' },
+            { url: '/icon.png', sizes: '512x512', type: 'image/png' },
+        ],
+        apple: [
+            { url: '/apple-icon.png', sizes: '512x512', type: 'image/png' },
+        ],
+    },
 };
 
 export default function RootLayout({
