@@ -14,11 +14,11 @@ const STATUS_OPTIONS: { value: ProjectStatus; label: string; color: string }[] =
   { value: 'done', label: 'Done', color: 'bg-green-500' },
 ];
 
-const DIVISION_OPTIONS: { value: DivisionType; label: string; icon: string }[] = [
-  { value: 'ads', label: 'Ads', icon: '📢' },
-  { value: 'content_creator', label: 'Content Creator', icon: '🎬' },
-  { value: 'affiliate', label: 'Affiliate', icon: '🤝' },
-  { value: 'kol', label: 'KOL', icon: '⭐' },
+const DIVISION_OPTIONS: { value: DivisionType; label: string }[] = [
+  { value: 'ads', label: 'Ads' },
+  { value: 'content_creator', label: 'Content Creator' },
+  { value: 'affiliate', label: 'Affiliate' },
+  { value: 'kol', label: 'KOL' },
 ];
 
 interface ProjectDetailClientProps {
@@ -286,13 +286,13 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
                 onClick={() => setEditing(true)}
                 className="px-4 py-2 rounded-xl bg-slate-800 text-white font-medium hover:bg-slate-700 transition-colors text-sm border border-slate-700"
               >
-                ✏️ Edit
+                Edit
               </button>
               <button
                 onClick={() => setDeleteConfirm(true)}
                 className="px-4 py-2 rounded-xl bg-red-500/10 text-red-400 font-medium hover:bg-red-500/20 transition-colors text-sm border border-red-500/20"
               >
-                🗑️ Hapus
+                Hapus
               </button>
             </>
           ) : (
@@ -308,7 +308,7 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
                 disabled={saving}
                 className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:bg-amber-300 text-slate-900 font-bold transition-colors text-sm"
               >
-                {saving ? 'Menyimpan...' : '💾 Simpan'}
+                {saving ? 'Menyimpan...' : 'Simpan'}
               </button>
             </>
           )}
@@ -330,7 +330,7 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
       {/* Delete Confirmation */}
       {deleteConfirm && (
         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
-          <p className="text-red-400 text-sm mb-3">⚠️ Yakin ingin menghapus project &quot;{project.name}&quot;? Semua data terkait akan ikut terhapus.</p>
+          <p className="text-red-400 text-sm mb-3">Yakin ingin menghapus project &quot;{project.name}&quot;? Semua data terkait akan ikut terhapus.</p>
           <div className="flex gap-2">
             <button
               onClick={handleDelete}
@@ -474,7 +474,6 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
                   >
                     ✓
                   </button>
-                  <span className="text-lg">{DIVISION_OPTIONS.find(d => d.value === div.division)?.icon}</span>
                   <span className="text-white font-medium text-sm flex-1">
                     {DIVISION_OPTIONS.find(d => d.value === div.division)?.label}
                   </span>
@@ -520,7 +519,6 @@ export default function ProjectDetailClient({ projectId }: ProjectDetailClientPr
                 return (
                   <div key={div.id} className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
                     <div className="flex items-center gap-3">
-                      <span className="text-lg">{divConfig?.icon}</span>
                       <div>
                         <p className="text-white text-sm font-medium">{divConfig?.label}</p>
                         <p className="text-slate-400 text-xs">PIC: {div.pic_name || '-'}</p>
