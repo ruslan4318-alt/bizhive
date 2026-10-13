@@ -30,25 +30,25 @@ interface ProjectsHubClientProps {
 }
 
 const SERVICE_CONFIG: Record<ServiceType, { label: string; color: string; border: string }> = {
-  shop_opt: { label: 'Shop Opt', color: 'text-amber-400 bg-amber-500/10', border: 'border-amber-500/25' },
-  live_streaming: { label: 'Live Stream', color: 'text-blue-400 bg-blue-500/10', border: 'border-blue-500/25' },
-  content: { label: 'Content', color: 'text-purple-400 bg-purple-500/10', border: 'border-purple-500/25' },
-  kol: { label: 'KOL & Affiliate', color: 'text-emerald-400 bg-emerald-500/10', border: 'border-emerald-500/25' },
+  shop_opt:       { label: 'Shop Opt',        color: 'text-amber-700 bg-amber-50',    border: 'border-amber-200' },
+  live_streaming: { label: 'Live Stream',     color: 'text-blue-700 bg-blue-50',      border: 'border-blue-200' },
+  content:        { label: 'Content',         color: 'text-purple-700 bg-purple-50',  border: 'border-purple-200' },
+  kol:            { label: 'KOL & Affiliate', color: 'text-emerald-700 bg-emerald-50',border: 'border-emerald-200' },
 };
 
 const STATUS_CONFIG: Record<TaskStatus, { label: string; color: string; bg: string }> = {
-  belum_dimulai: { label: 'Belum Dimulai', color: 'text-slate-400', bg: 'bg-slate-800 border-slate-700' },
-  ongoing: { label: 'Berjalan', color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/25' },
-  review: { label: 'Review', color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/25' },
-  revisi: { label: 'Revisi', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/25' },
-  done: { label: 'Selesai', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/25' },
+  belum_dimulai: { label: 'Belum Dimulai', color: 'text-gray-600',    bg: 'bg-gray-100 border-gray-300' },
+  ongoing:       { label: 'Berjalan',      color: 'text-blue-700',    bg: 'bg-blue-50 border-blue-200' },
+  review:        { label: 'Review',        color: 'text-purple-700',  bg: 'bg-purple-50 border-purple-200' },
+  revisi:        { label: 'Revisi',        color: 'text-orange-700',  bg: 'bg-orange-50 border-orange-200' },
+  done:          { label: 'Selesai',       color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
 };
 
 const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: string }> = {
-  low: { label: 'Rendah', color: 'text-slate-400' },
-  normal: { label: 'Normal', color: 'text-slate-200' },
-  high: { label: 'Tinggi', color: 'text-amber-400' },
-  urgent: { label: 'Urgent', color: 'text-red-400 font-bold' },
+  low:    { label: 'Rendah', color: 'text-gray-400' },
+  normal: { label: 'Normal', color: 'text-gray-600' },
+  high:   { label: 'Tinggi', color: 'text-amber-600' },
+  urgent: { label: 'Urgent', color: 'text-red-600 font-bold' },
 };
 
 // Baseline tasks if database tasks table has empty rows
@@ -265,328 +265,269 @@ export default function ProjectsHubClient({
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* ─── Top Header ─── */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-2 border-b border-slate-800/80">
+
+      {/* ─── Header ─── */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-              Dapur Kerja Operasional
-            </span>
-            <span className="text-slate-500 text-xs font-mono">{tasks.length} Total Task</span>
-          </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Projects & Tasks</h1>
-          <p className="text-slate-400 text-xs mt-0.5">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Dapur Kerja Operasional</p>
+          <h1 className="text-2xl font-bold text-gray-900">Projects & Tasks</h1>
+          <p className="text-gray-500 text-sm mt-0.5">
             Kelola pembagian tugas operasional tim, monitor PIC, deadline, dan alur pengerjaan
           </p>
         </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-colors shadow-sm"
-          >
-            <Icons.Plus size={14} />
-            <span>Tambah Task</span>
-          </button>
-        </div>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-white font-semibold text-sm transition-colors"
+        >
+          <Icons.Plus size={14} />
+          Tambah Task
+        </button>
       </div>
 
       {/* ─── Tasks Table & Operational Management ─── */}
-      <div className="space-y-4">
-          {/* Sub-tab Navigation */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-[#0D131F] border border-slate-800 p-3 rounded-xl">
-            {/* Left: View Filter Tabs */}
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setActiveFilterTab('all')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  activeFilterTab === 'all'
-                    ? 'bg-slate-800 text-white font-semibold'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                Semua Project ({tasks.length})
-              </button>
-              <button
-                onClick={() => setActiveFilterTab('my_tasks')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  activeFilterTab === 'my_tasks'
-                    ? 'bg-slate-800 text-white font-semibold'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                Task Saya
-              </button>
-              <button
-                onClick={() => setActiveFilterTab('created_by_me')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  activeFilterTab === 'created_by_me'
-                    ? 'bg-slate-800 text-white font-semibold'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                Dibuat Saya
-              </button>
-            </div>
-
-            {/* Right: Quick Status Counters */}
-            <div className="flex items-center gap-2 text-[11px] font-mono">
-              <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                {counts.ongoing} Berjalan
-              </span>
-              <span className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                {counts.review} Review
-              </span>
-              <span className="px-2 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">
-                {counts.revisi} Revisi
-              </span>
-              <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                {counts.done} Selesai
-              </span>
-            </div>
+      <div className="space-y-3">
+        {/* Sub-tab + Status Counters */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white border border-gray-200 p-3 rounded-xl">
+          {/* Tabs */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setActiveFilterTab('all')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                activeFilterTab === 'all'
+                  ? 'bg-gray-100 text-gray-900 font-semibold'
+                  : 'text-gray-500 hover:text-gray-800'
+              }`}
+            >
+              Semua ({tasks.length})
+            </button>
+            <button
+              onClick={() => setActiveFilterTab('my_tasks')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                activeFilterTab === 'my_tasks'
+                  ? 'bg-gray-100 text-gray-900 font-semibold'
+                  : 'text-gray-500 hover:text-gray-800'
+              }`}
+            >
+              Task Saya
+            </button>
+            <button
+              onClick={() => setActiveFilterTab('created_by_me')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                activeFilterTab === 'created_by_me'
+                  ? 'bg-gray-100 text-gray-900 font-semibold'
+                  : 'text-gray-500 hover:text-gray-800'
+              }`}
+            >
+              Dibuat Saya
+            </button>
           </div>
 
-          {/* Filter Bar (Search + Dropdowns) */}
-          <div className="grid sm:grid-cols-3 gap-3 bg-[#0D131F] border border-slate-800 p-3 rounded-xl">
-            {/* Search Input */}
-            <div className="relative">
-              <span className="absolute left-3 top-2.5 text-slate-500">
-                <Icons.Search size={14} />
-              </span>
-              <input
-                type="text"
-                placeholder="Cari task, brand, atau PIC..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/60"
-              />
-            </div>
-
-            {/* Service Filter */}
-            <div>
-              <select
-                value={selectedService}
-                onChange={(e) => setSelectedService(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-300 focus:outline-none focus:border-amber-500/60"
-              >
-                <option value="all">Semua Servis / Area</option>
-                <option value="shop_opt">Shop Optimization</option>
-                <option value="live_streaming">Live Streaming</option>
-                <option value="content">Content Production</option>
-                <option value="kol">KOL & Affiliate</option>
-              </select>
-            </div>
-
-            {/* Status Filter */}
-            <div>
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-300 focus:outline-none focus:border-amber-500/60"
-              >
-                <option value="all">Semua Status</option>
-                <option value="belum_dimulai">Belum Dimulai</option>
-                <option value="ongoing">Berjalan</option>
-                <option value="review">Review</option>
-                <option value="revisi">Revisi</option>
-                <option value="done">Selesai</option>
-              </select>
-            </div>
-          </div>
-
-          {/* ─── Main Tasks Table ─── */}
-          <div className="bg-[#0D131F] border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
-                    <th className="px-4 py-3">Pekerjaan & Brand</th>
-                    <th className="px-4 py-3">Area Servis</th>
-                    <th className="px-4 py-3">PIC</th>
-                    <th className="px-4 py-3">Deadline</th>
-                    <th className="px-4 py-3">Prioritas</th>
-                    <th className="px-4 py-3">Status</th>
-                    <th className="px-4 py-3 text-right">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60">
-                  {filteredTasks.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="px-4 py-12 text-center text-slate-500">
-                        Tidak ada pekerjaan yang cocok dengan filter.
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredTasks.map((t) => {
-                      const daysLeft = calculateDaysLeft(t.deadline);
-                      const isUrgentDeadline = daysLeft <= 2 && t.status !== 'done';
-                      const srvConfig = SERVICE_CONFIG[t.service_type] || SERVICE_CONFIG.shop_opt;
-                      const statConfig = STATUS_CONFIG[t.status] || STATUS_CONFIG.ongoing;
-                      const prioConfig = PRIORITY_CONFIG[t.priority] || PRIORITY_CONFIG.normal;
-
-                      return (
-                        <tr
-                          key={t.id}
-                          className="hover:bg-slate-800/30 transition-colors group"
-                        >
-                          {/* Title & Brand */}
-                          <td className="px-4 py-3.5">
-                            <div>
-                              <p className="font-semibold text-white group-hover:text-amber-400 transition-colors leading-snug">
-                                {t.title}
-                              </p>
-                              <p className="text-[11px] text-slate-400 mt-0.5">{t.brand_name}</p>
-                              {t.notes && (
-                                <p className="text-[10px] text-slate-500 mt-1 line-clamp-1 italic">
-                                  {t.notes}
-                                </p>
-                              )}
-                            </div>
-                          </td>
-
-                          {/* Service Badge */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
-                            <span
-                              className={`text-[10px] font-medium px-2 py-0.5 rounded border ${srvConfig.color} ${srvConfig.border}`}
-                            >
-                              {srvConfig.label}
-                            </span>
-                          </td>
-
-                          {/* PIC */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
-                            <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-300">
-                                {t.pic_name.charAt(0)}
-                              </div>
-                              <span className="text-slate-200">{t.pic_name}</span>
-                            </div>
-                          </td>
-
-                          {/* Deadline */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
-                            <div>
-                              <p
-                                className={`font-mono text-[11px] ${
-                                  isUrgentDeadline ? 'text-red-400 font-bold' : 'text-slate-300'
-                                }`}
-                              >
-                                {t.deadline}
-                              </p>
-                              <span
-                                className={`text-[10px] font-mono ${
-                                  t.status === 'done'
-                                    ? 'text-slate-500'
-                                    : daysLeft < 0
-                                    ? 'text-red-400 font-bold'
-                                    : daysLeft <= 2
-                                    ? 'text-orange-400 font-semibold'
-                                    : 'text-slate-500'
-                                }`}
-                              >
-                                {t.status === 'done'
-                                  ? 'Selesai'
-                                  : daysLeft < 0
-                                  ? `Terlewat ${Math.abs(daysLeft)} hari`
-                                  : daysLeft === 0
-                                  ? 'Hari ini'
-                                  : `${daysLeft} hari lagi`}
-                              </span>
-                            </div>
-                          </td>
-
-                          {/* Priority */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
-                            <span className={`text-[11px] ${prioConfig.color}`}>
-                              {prioConfig.label}
-                            </span>
-                          </td>
-
-                          {/* Status Picker (Member can pick, Manager has full control) */}
-                          <td className="px-4 py-3.5 whitespace-nowrap">
-                            <select
-                              value={t.status}
-                              onChange={(e) =>
-                                handleUpdateStatus(t.id, e.target.value as TaskStatus)
-                              }
-                              className={`text-[11px] font-medium px-2 py-1 rounded border outline-none cursor-pointer transition-colors ${statConfig.bg} ${statConfig.color}`}
-                            >
-                              <option value="belum_dimulai">Belum Dimulai</option>
-                              <option value="ongoing">Berjalan</option>
-                              <option value="review">Review</option>
-                              <option value="revisi">Revisi</option>
-                              <option value="done">Selesai</option>
-                            </select>
-                          </td>
-
-                          {/* Actions */}
-                          <td className="px-4 py-3.5 text-right whitespace-nowrap">
-                            <button
-                              onClick={() => setEditingTask(t)}
-                              className="text-xs text-slate-400 hover:text-amber-400 transition-colors px-2 py-1 rounded hover:bg-slate-800"
-                            >
-                              Edit
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
+          {/* Status counters */}
+          <div className="flex items-center gap-2 text-xs">
+            <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-medium">{counts.ongoing} Berjalan</span>
+            <span className="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 font-medium">{counts.review} Review</span>
+            <span className="px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200 font-medium">{counts.revisi} Revisi</span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">{counts.done} Selesai</span>
           </div>
         </div>
 
-      {/* ─── Modal Tambah Pekerjaan / Task ─── */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-[#0D131F] border border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h2 className="text-base font-bold text-white">Tambah Task / Pekerjaan Baru</h2>
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="text-slate-400 hover:text-white p-1"
-              >
-                ✕
-              </button>
-            </div>
+        {/* Filter Bar */}
+        <div className="grid sm:grid-cols-3 gap-2">
+          <div className="relative">
+            <Icons.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Cari task, brand, atau PIC..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-400 transition-colors"
+            />
+          </div>
+          <select
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
+            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-amber-400 transition-colors"
+          >
+            <option value="all">Semua Servis</option>
+            <option value="shop_opt">Shop Optimization</option>
+            <option value="live_streaming">Live Streaming</option>
+            <option value="content">Content Production</option>
+            <option value="kol">KOL & Affiliate</option>
+          </select>
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-amber-400 transition-colors"
+          >
+            <option value="all">Semua Status</option>
+            <option value="belum_dimulai">Belum Dimulai</option>
+            <option value="ongoing">Berjalan</option>
+            <option value="review">Review</option>
+            <option value="revisi">Revisi</option>
+            <option value="done">Selesai</option>
+          </select>
+        </div>
 
-            <form onSubmit={handleCreateTask} className="space-y-4 text-xs">
+        {/* Tasks Table */}
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 bg-gray-50 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">
+                  <th className="px-4 py-3">Pekerjaan & Brand</th>
+                  <th className="px-4 py-3">Servis</th>
+                  <th className="px-4 py-3">PIC</th>
+                  <th className="px-4 py-3">Deadline</th>
+                  <th className="px-4 py-3">Prioritas</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredTasks.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="px-4 py-12 text-center text-gray-400 text-sm">
+                      Tidak ada pekerjaan yang cocok dengan filter.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredTasks.map((t) => {
+                    const daysLeft = calculateDaysLeft(t.deadline);
+                    const isUrgentDeadline = daysLeft <= 2 && t.status !== 'done';
+                    const srvConfig = SERVICE_CONFIG[t.service_type] || SERVICE_CONFIG.shop_opt;
+                    const statConfig = STATUS_CONFIG[t.status] || STATUS_CONFIG.ongoing;
+                    const prioConfig = PRIORITY_CONFIG[t.priority] || PRIORITY_CONFIG.normal;
+
+                    return (
+                      <tr key={t.id} className="hover:bg-gray-50 transition-colors">
+                        {/* Title & Brand */}
+                        <td className="px-4 py-3">
+                          <p className="font-semibold text-gray-900 leading-snug">{t.title}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">{t.brand_name}</p>
+                          {t.notes && (
+                            <p className="text-xs text-gray-400 mt-0.5 line-clamp-1 italic">{t.notes}</p>
+                          )}
+                        </td>
+
+                        {/* Service */}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${srvConfig.color} ${srvConfig.border}`}>
+                            {srvConfig.label}
+                          </span>
+                        </td>
+
+                        {/* PIC */}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-[10px] font-bold text-amber-700">
+                              {t.pic_name.charAt(0)}
+                            </div>
+                            <span className="text-gray-700 text-sm">{t.pic_name}</span>
+                          </div>
+                        </td>
+
+                        {/* Deadline */}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <p className={`font-mono text-xs ${isUrgentDeadline ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                            {t.deadline}
+                          </p>
+                          <span className={`text-xs ${
+                            t.status === 'done'
+                              ? 'text-gray-400'
+                              : daysLeft < 0
+                              ? 'text-red-600 font-semibold'
+                              : daysLeft <= 2
+                              ? 'text-orange-600 font-semibold'
+                              : 'text-gray-400'
+                          }`}>
+                            {t.status === 'done'
+                              ? 'Selesai'
+                              : daysLeft < 0
+                              ? `Terlewat ${Math.abs(daysLeft)}h`
+                              : daysLeft === 0
+                              ? 'Hari ini'
+                              : `${daysLeft} hari`}
+                          </span>
+                        </td>
+
+                        {/* Priority */}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span className={`text-xs ${prioConfig.color}`}>{prioConfig.label}</span>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <select
+                            value={t.status}
+                            onChange={(e) => handleUpdateStatus(t.id, e.target.value as TaskStatus)}
+                            className={`text-xs font-medium px-2 py-1 rounded-lg border outline-none cursor-pointer transition-colors ${statConfig.bg} ${statConfig.color}`}
+                          >
+                            <option value="belum_dimulai">Belum Dimulai</option>
+                            <option value="ongoing">Berjalan</option>
+                            <option value="review">Review</option>
+                            <option value="revisi">Revisi</option>
+                            <option value="done">Selesai</option>
+                          </select>
+                        </td>
+
+                        {/* Actions */}
+                        <td className="px-4 py-3 text-right whitespace-nowrap">
+                          <button
+                            onClick={() => setEditingTask(t)}
+                            className="text-xs text-gray-400 hover:text-amber-600 transition-colors px-2 py-1 rounded hover:bg-amber-50"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Modal Tambah Task ─── */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-lg shadow-xl">
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-gray-100">
+              <h2 className="text-sm font-bold text-gray-900">Tambah Task Baru</h2>
+              <button onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-gray-700 p-1">✕</button>
+            </div>
+            <form onSubmit={handleCreateTask} className="p-6 space-y-4 text-sm">
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Judul Pekerjaan *</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Judul Pekerjaan *</label>
                 <input
                   type="text"
                   required
-                  placeholder="Contoh: Evaluasi Winning Ads Campaign 10.10"
+                  placeholder="Contoh: Evaluasi Winning Ads Campaign"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-400 transition-colors"
                 />
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Brand Klien *</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Brand Klien *</label>
                   <select
                     value={formBrand}
                     onChange={(e) => setFormBrand(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-400 transition-colors"
                   >
                     {brandsList.map((b) => (
-                      <option key={b.id} value={b.name}>
-                        {b.name}
-                      </option>
+                      <option key={b.id} value={b.name}>{b.name}</option>
                     ))}
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Area / Servis *</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Area / Servis *</label>
                   <select
                     value={formService}
                     onChange={(e) => setFormService(e.target.value as ServiceType)}
-                    className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-400 transition-colors"
                   >
                     <option value="shop_opt">Shop Optimization</option>
                     <option value="live_streaming">Live Streaming</option>
@@ -595,51 +536,41 @@ export default function ProjectsHubClient({
                   </select>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">
-                    PIC (Penanggung Jawab) *
-                  </label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">PIC *</label>
                   <input
                     type="text"
                     disabled={!isManager}
                     value={isManager ? formPic : user.full_name}
                     onChange={(e) => setFormPic(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white disabled:opacity-60 focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 disabled:bg-gray-50 disabled:text-gray-500 focus:outline-none focus:border-amber-400 transition-colors"
                     placeholder="Nama PIC"
                   />
-                  {!isManager && (
-                    <span className="text-[10px] text-slate-500 mt-0.5 block">
-                      Member otomatis menugaskan ke diri sendiri
-                    </span>
-                  )}
                 </div>
-
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Deadline *</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Deadline *</label>
                   <input
                     type="date"
                     required
                     value={formDeadline}
                     onChange={(e) => setFormDeadline(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-400 font-mono transition-colors"
                   />
                 </div>
               </div>
-
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Prioritas *</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-2">Prioritas</label>
                 <div className="grid grid-cols-4 gap-2">
                   {(['low', 'normal', 'high', 'urgent'] as TaskPriority[]).map((prio) => (
                     <button
                       key={prio}
                       type="button"
                       onClick={() => setFormPriority(prio)}
-                      className={`py-1.5 rounded-lg border text-center font-medium capitalize transition-all ${
+                      className={`py-1.5 rounded-lg border text-xs text-center font-medium transition-all ${
                         formPriority === prio
-                          ? 'border-amber-500/60 bg-amber-500/15 text-amber-300 font-semibold'
-                          : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-white'
+                          ? 'border-amber-400 bg-amber-50 text-amber-700 font-semibold'
+                          : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
                       }`}
                     >
                       {PRIORITY_CONFIG[prio].label}
@@ -647,29 +578,27 @@ export default function ProjectsHubClient({
                   ))}
                 </div>
               </div>
-
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Catatan / Instruksi</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Catatan</label>
                 <textarea
-                  rows={3}
-                  placeholder="Detail instruksi atau parameter pekerjaan..."
+                  rows={2}
+                  placeholder="Instruksi atau detail pekerjaan..."
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-400 resize-none transition-colors"
                 />
               </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium"
+                  className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium border border-gray-200 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold"
+                  className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-white font-bold text-sm transition-colors"
                 >
                   Simpan Task
                 </button>
@@ -681,60 +610,52 @@ export default function ProjectsHubClient({
 
       {/* ─── Modal Edit Task ─── */}
       {editingTask && (
-        <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-[#0D131F] border border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h2 className="text-base font-bold text-white">Edit Task</h2>
-              <button onClick={() => setEditingTask(null)} className="text-slate-400 hover:text-white p-1">
-                ✕
-              </button>
+        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-lg shadow-xl">
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-gray-100">
+              <h2 className="text-sm font-bold text-gray-900">Edit Task</h2>
+              <button onClick={() => setEditingTask(null)} className="text-gray-400 hover:text-gray-700 p-1">✕</button>
             </div>
-
-            <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveEdit} className="p-6 space-y-4 text-sm">
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Judul Pekerjaan</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Judul Pekerjaan</label>
                 <input
                   type="text"
                   required
                   value={editingTask.title}
                   onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-400 transition-colors"
                 />
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">PIC</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">PIC</label>
                   <input
                     type="text"
                     disabled={!isManager}
                     value={editingTask.pic_name}
                     onChange={(e) => setEditingTask({ ...editingTask, pic_name: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white disabled:opacity-60 focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 disabled:bg-gray-50 focus:outline-none focus:border-amber-400 transition-colors"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Deadline</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Deadline</label>
                   <input
                     type="date"
                     required
                     value={editingTask.deadline}
                     onChange={(e) => setEditingTask({ ...editingTask, deadline: e.target.value })}
-                    className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-400 font-mono transition-colors"
                   />
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Prioritas</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Prioritas</label>
                   <select
                     value={editingTask.priority}
-                    onChange={(e) =>
-                      setEditingTask({ ...editingTask, priority: e.target.value as TaskPriority })
-                    }
-                    className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                    onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value as TaskPriority })}
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-400 transition-colors"
                   >
                     <option value="low">Rendah</option>
                     <option value="normal">Normal</option>
@@ -742,15 +663,12 @@ export default function ProjectsHubClient({
                     <option value="urgent">Urgent</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Status</label>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Status</label>
                   <select
                     value={editingTask.status}
-                    onChange={(e) =>
-                      setEditingTask({ ...editingTask, status: e.target.value as TaskStatus })
-                    }
-                    className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                    onChange={(e) => setEditingTask({ ...editingTask, status: e.target.value as TaskStatus })}
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-400 transition-colors"
                   >
                     <option value="belum_dimulai">Belum Dimulai</option>
                     <option value="ongoing">Berjalan</option>
@@ -760,28 +678,26 @@ export default function ProjectsHubClient({
                   </select>
                 </div>
               </div>
-
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Catatan</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Catatan</label>
                 <textarea
-                  rows={3}
+                  rows={2}
                   value={editingTask.notes || ''}
                   onChange={(e) => setEditingTask({ ...editingTask, notes: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:border-amber-400 resize-none transition-colors"
                 />
               </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setEditingTask(null)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium"
+                  className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium border border-gray-200 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold"
+                  className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-white font-bold text-sm transition-colors"
                 >
                   Simpan Perubahan
                 </button>

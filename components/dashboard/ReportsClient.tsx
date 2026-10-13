@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { Icons } from '@/components/ui/Icons';
 
 interface Project {
   id: string;
@@ -57,8 +58,6 @@ interface TikTokRecord {
   note?: string;
 }
 
-import { Icons } from '@/components/ui/Icons';
-
 type ReportType = 'shopee-daily' | 'shopee-monthly' | 'tiktok';
 
 const REPORT_TYPES: { key: ReportType; label: string }[] = [
@@ -96,7 +95,6 @@ export default function ReportsClient() {
 
   useEffect(() => {
     fetchProjects();
-    // Set default dates
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
     setDateFrom(firstDay.toISOString().split('T')[0]);
@@ -186,7 +184,6 @@ export default function ReportsClient() {
     return num.toFixed(num % 1 === 0 ? 0 : 2);
   };
 
-  // Calculate summary stats
   const getShopeeDailySummary = () => {
     if (!reportData?.shopeeDaily?.length) return null;
     const data = reportData.shopeeDaily;
@@ -208,29 +205,30 @@ export default function ReportsClient() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-white">Reports</h1>
-        <p className="text-slate-400 text-sm mt-1">Generate dan export laporan performa</p>
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Pusat Analitik & Laporan</p>
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Reports</h1>
+        <p className="text-gray-500 text-sm mt-0.5">Generate dan export laporan performa marketplace & iklan</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-5">
-        <div className="flex items-center gap-2 mb-1 text-white font-semibold text-base">
-          <Icons.Filter className="text-amber-400" size={18} />
-          <span>Filter Report</span>
+      <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-5 shadow-sm">
+        <div className="flex items-center gap-2 mb-1 text-gray-900 font-semibold text-sm">
+          <Icons.Filter className="text-amber-500" size={16} />
+          <span>Filter Parameter Laporan</span>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Project *</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1.5">Project *</label>
             {loading ? (
-              <div className="h-12 bg-slate-800 rounded-xl animate-pulse" />
+              <div className="h-10 bg-gray-100 rounded-lg animate-pulse" />
             ) : (
               <select
                 value={selectedProject}
                 onChange={e => setSelectedProject(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white focus:border-amber-500 outline-none transition-all"
+                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-800 text-sm focus:outline-none focus:border-amber-400 transition-colors"
               >
                 <option value="">-- Pilih Project --</option>
                 {projects.map(p => (
@@ -242,11 +240,11 @@ export default function ReportsClient() {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Tipe Report</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1.5">Tipe Laporan</label>
             <select
               value={reportType}
               onChange={e => setReportType(e.target.value as ReportType)}
-              className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white focus:border-amber-500 outline-none transition-all"
+              className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-800 text-sm focus:outline-none focus:border-amber-400 transition-colors"
             >
               {REPORT_TYPES.map(t => (
                 <option key={t.key} value={t.key}>{t.label}</option>
@@ -257,63 +255,63 @@ export default function ReportsClient() {
 
         {/* Date Range */}
         {reportType === 'shopee-monthly' ? (
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5">Dari Bulan</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Dari Bulan</label>
               <input
                 type="month"
                 value={monthFrom}
                 onChange={e => setMonthFrom(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm focus:border-amber-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-800 text-sm focus:outline-none focus:border-amber-400 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5">Sampai Bulan</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Sampai Bulan</label>
               <input
                 type="month"
                 value={monthTo}
                 onChange={e => setMonthTo(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm focus:border-amber-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-800 text-sm focus:outline-none focus:border-amber-400 transition-colors"
               />
             </div>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5">Dari Tanggal</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Dari Tanggal</label>
               <input
                 type="date"
                 value={dateFrom}
                 onChange={e => setDateFrom(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm focus:border-amber-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-800 text-sm focus:outline-none focus:border-amber-400 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5">Sampai Tanggal</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Sampai Tanggal</label>
               <input
                 type="date"
                 value={dateTo}
                 onChange={e => setDateTo(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm focus:border-amber-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-800 text-sm focus:outline-none focus:border-amber-400 transition-colors"
               />
             </div>
           </div>
         )}
 
-        <div className="flex gap-3">
+        <div className="flex gap-2.5 pt-1">
           <button
             onClick={generateReport}
             disabled={!selectedProject || generating}
-            className="px-6 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:bg-slate-700 disabled:text-slate-500 text-slate-900 font-semibold transition-colors text-sm"
+            className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-white font-semibold transition-colors text-sm shadow-sm"
           >
-            {generating ? 'Generating...' : 'Generate Report'}
+            {generating ? 'Menghasilkan...' : 'Generate Report'}
           </button>
           {reportData && (
             <button
               onClick={exportToCSV}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold transition-colors text-sm border border-slate-700"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white hover:bg-gray-50 text-emerald-700 font-semibold transition-colors text-sm border border-emerald-200 shadow-sm"
             >
-              <Icons.Download size={15} />
+              <Icons.Download size={14} />
               <span>Export CSV</span>
             </button>
           )}
@@ -326,53 +324,52 @@ export default function ReportsClient() {
           {/* Shopee Daily Report */}
           {reportType === 'shopee-daily' && reportData.shopeeDaily && (
             <>
-              {/* Summary Cards */}
               {(() => {
                 const summary = getShopeeDailySummary();
                 if (!summary) return (
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
-                    <p className="text-slate-500">Tidak ada data untuk periode ini</p>
+                  <div className="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-sm">
+                    <p className="text-gray-400 text-sm">Tidak ada data untuk periode ini.</p>
                   </div>
                 );
                 return (
                   <>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                        <p className="text-slate-400 text-xs uppercase tracking-wider">Total Expense</p>
-                        <p className="text-xl font-bold text-white mt-1">Rp{formatNumber(summary.totalExpense)}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                        <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">Total Expense</p>
+                        <p className="text-xl font-bold font-mono text-gray-900 mt-1">Rp{formatNumber(summary.totalExpense)}</p>
                       </div>
-                      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                        <p className="text-slate-400 text-xs uppercase tracking-wider">Total GMV</p>
-                        <p className="text-xl font-bold text-green-400 mt-1">Rp{formatNumber(summary.totalGmv)}</p>
+                      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                        <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">Total GMV</p>
+                        <p className="text-xl font-bold font-mono text-emerald-600 mt-1">Rp{formatNumber(summary.totalGmv)}</p>
                       </div>
-                      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                        <p className="text-slate-400 text-xs uppercase tracking-wider">ROAS</p>
-                        <p className={`text-xl font-bold mt-1 ${summary.roas >= 3 ? 'text-green-400' : summary.roas >= 1 ? 'text-amber-400' : 'text-red-400'}`}>
+                      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                        <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">ROAS</p>
+                        <p className={`text-xl font-bold font-mono mt-1 ${summary.roas >= 3 ? 'text-emerald-600' : summary.roas >= 1 ? 'text-amber-600' : 'text-red-600'}`}>
                           {summary.roas.toFixed(2)}x
                         </p>
                       </div>
-                      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                        <p className="text-slate-400 text-xs uppercase tracking-wider">Products Sold</p>
-                        <p className="text-xl font-bold text-blue-400 mt-1">{formatNumber(summary.totalSold)}</p>
+                      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                        <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">Products Sold</p>
+                        <p className="text-xl font-bold font-mono text-blue-600 mt-1">{formatNumber(summary.totalSold)}</p>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-slate-900/50 border border-slate-800/50 rounded-xl p-3 text-center">
-                        <p className="text-sm font-bold text-blue-400">{summary.ctr.toFixed(2)}%</p>
-                        <p className="text-xs text-slate-500">Avg CTR</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                      <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                        <p className="text-sm font-bold font-mono text-blue-600">{summary.ctr.toFixed(2)}%</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Avg CTR</p>
                       </div>
-                      <div className="bg-slate-900/50 border border-slate-800/50 rounded-xl p-3 text-center">
-                        <p className="text-sm font-bold text-purple-400">Rp{formatNumber(summary.cpc)}</p>
-                        <p className="text-xs text-slate-500">Avg CPC</p>
+                      <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                        <p className="text-sm font-bold font-mono text-purple-600">Rp{formatNumber(summary.cpc)}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Avg CPC</p>
                       </div>
-                      <div className="bg-slate-900/50 border border-slate-800/50 rounded-xl p-3 text-center">
-                        <p className="text-sm font-bold text-cyan-400">{summary.cr.toFixed(2)}%</p>
-                        <p className="text-xs text-slate-500">Avg CR</p>
+                      <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                        <p className="text-sm font-bold font-mono text-teal-600">{summary.cr.toFixed(2)}%</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Avg CR</p>
                       </div>
-                      <div className="bg-slate-900/50 border border-slate-800/50 rounded-xl p-3 text-center">
-                        <p className="text-sm font-bold text-amber-400">{summary.days}</p>
-                        <p className="text-xs text-slate-500">Data Points</p>
+                      <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                        <p className="text-sm font-bold font-mono text-amber-600">{summary.days}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Data Points</p>
                       </div>
                     </div>
                   </>
@@ -381,37 +378,37 @@ export default function ReportsClient() {
 
               {/* Data Table */}
               {reportData.shopeeDaily.length > 0 && (
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                  <h3 className="text-md font-semibold text-white mb-4">Detail Data</h3>
+                <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Detail Data Per Tanggal</h3>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-xs">
                       <thead>
-                        <tr className="border-b border-slate-800">
-                          <th className="text-left text-xs text-slate-400 uppercase px-3 py-2">Date</th>
-                          <th className="text-left text-xs text-slate-400 uppercase px-3 py-2">Type</th>
-                          <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">Expense</th>
-                          <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">Impr.</th>
-                          <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">Clicks</th>
-                          <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">Conv.</th>
-                          <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">Sold</th>
-                          <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">GMV</th>
-                          <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">ROAS</th>
+                        <tr className="border-b border-gray-200 bg-gray-50 text-gray-500 uppercase tracking-wider text-[10px]">
+                          <th className="text-left px-3 py-2.5">Date</th>
+                          <th className="text-left px-3 py-2.5">Type</th>
+                          <th className="text-right px-3 py-2.5">Expense</th>
+                          <th className="text-right px-3 py-2.5">Impr.</th>
+                          <th className="text-right px-3 py-2.5">Clicks</th>
+                          <th className="text-right px-3 py-2.5">Conv.</th>
+                          <th className="text-right px-3 py-2.5">Sold</th>
+                          <th className="text-right px-3 py-2.5">GMV</th>
+                          <th className="text-right px-3 py-2.5">ROAS</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="divide-y divide-gray-100">
                         {reportData.shopeeDaily.map((r, i) => {
                           const roas = r.expense > 0 ? r.direct_gmv / r.expense : 0;
                           return (
-                            <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/30">
-                              <td className="px-3 py-2 text-white">{r.date}</td>
-                              <td className="px-3 py-2 text-slate-300 capitalize">{r.ad_type.replace('_', ' ')}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">Rp{formatNumber(r.expense)}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">{formatNumber(r.impressions)}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">{formatNumber(r.clicks)}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">{r.conversions}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">{r.products_sold}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">Rp{formatNumber(r.direct_gmv)}</td>
-                              <td className={`px-3 py-2 text-right font-medium ${roas >= 3 ? 'text-green-400' : roas >= 1 ? 'text-amber-400' : 'text-red-400'}`}>
+                            <tr key={i} className="hover:bg-gray-50/80 transition-colors">
+                              <td className="px-3 py-2 text-gray-800 font-mono">{r.date}</td>
+                              <td className="px-3 py-2 text-gray-600 capitalize">{r.ad_type.replace('_', ' ')}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">Rp{formatNumber(r.expense)}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">{formatNumber(r.impressions)}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">{formatNumber(r.clicks)}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">{r.conversions}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">{r.products_sold}</td>
+                              <td className="px-3 py-2 text-right font-mono font-medium text-emerald-600">Rp{formatNumber(r.direct_gmv)}</td>
+                              <td className={`px-3 py-2 text-right font-mono font-semibold ${roas >= 3 ? 'text-emerald-600' : roas >= 1 ? 'text-amber-600' : 'text-red-600'}`}>
                                 {roas.toFixed(2)}x
                               </td>
                             </tr>
@@ -429,50 +426,50 @@ export default function ReportsClient() {
           {reportType === 'shopee-monthly' && reportData.shopeeMonthly && (
             <>
               {reportData.shopeeMonthly.length === 0 ? (
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
-                  <p className="text-slate-500">Tidak ada data bulanan untuk periode ini</p>
+                <div className="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-sm">
+                  <p className="text-gray-400 text-sm">Tidak ada data bulanan untuk periode ini.</p>
                 </div>
               ) : (
                 reportData.shopeeMonthly.map((r, i) => (
-                  <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+                  <div key={i} className="bg-white border border-gray-200 rounded-xl p-5 space-y-4 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-white">📅 {r.month_year}</h3>
-                      <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                        r.health_status === 'sangat_baik' ? 'bg-green-500/10 text-green-400' :
-                        r.health_status === 'baik' ? 'bg-blue-500/10 text-blue-400' :
-                        'bg-red-500/10 text-red-400'
+                      <h3 className="text-base font-semibold text-gray-900">Periode: {r.month_year}</h3>
+                      <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium border ${
+                        r.health_status === 'sangat_baik' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                        r.health_status === 'baik' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                        'bg-red-50 text-red-700 border-red-200'
                       }`}>
                         {r.health_status.replace('_', ' ').replace(/^./, c => c.toUpperCase())}
                       </span>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      <div className="bg-slate-800/50 rounded-lg p-3">
-                        <p className="text-xs text-slate-500">Placed Order</p>
-                        <p className="text-white font-bold">Rp{formatNumber(r.placed_order)}</p>
+                      <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 font-medium">Placed Order</p>
+                        <p className="text-gray-900 font-bold font-mono text-sm mt-0.5">Rp{formatNumber(r.placed_order)}</p>
                       </div>
-                      <div className="bg-slate-800/50 rounded-lg p-3">
-                        <p className="text-xs text-slate-500">Confirmed Order</p>
-                        <p className="text-green-400 font-bold">Rp{formatNumber(r.confirmed_order)}</p>
+                      <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 font-medium">Confirmed Order</p>
+                        <p className="text-emerald-600 font-bold font-mono text-sm mt-0.5">Rp{formatNumber(r.confirmed_order)}</p>
                       </div>
-                      <div className="bg-slate-800/50 rounded-lg p-3">
-                        <p className="text-xs text-slate-500">Ads Spend</p>
-                        <p className="text-amber-400 font-bold">Rp{formatNumber(r.ads_keyword_spend)}</p>
+                      <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 font-medium">Ads Spend</p>
+                        <p className="text-amber-600 font-bold font-mono text-sm mt-0.5">Rp{formatNumber(r.ads_keyword_spend)}</p>
                       </div>
-                      <div className="bg-slate-800/50 rounded-lg p-3">
-                        <p className="text-xs text-slate-500">Penalty</p>
-                        <p className={`font-bold ${r.penalty_points > 0 ? 'text-red-400' : 'text-slate-500'}`}>{r.penalty_points} pts</p>
+                      <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 font-medium">Penalty</p>
+                        <p className={`font-bold font-mono text-sm mt-0.5 ${r.penalty_points > 0 ? 'text-red-600' : 'text-gray-500'}`}>{r.penalty_points} pts</p>
                       </div>
                     </div>
                     {r.summary_text && (
-                      <div className="bg-slate-800/30 rounded-lg p-3">
-                        <p className="text-xs text-slate-500 mb-1">Summary</p>
-                        <p className="text-slate-300 text-sm">{r.summary_text}</p>
+                      <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
+                        <p className="text-xs font-semibold text-gray-700 mb-1">Summary</p>
+                        <p className="text-gray-600 text-xs">{r.summary_text}</p>
                       </div>
                     )}
                     {r.next_plan_text && (
-                      <div className="bg-slate-800/30 rounded-lg p-3">
-                        <p className="text-xs text-slate-500 mb-1">Next Plan</p>
-                        <p className="text-slate-300 text-sm">{r.next_plan_text}</p>
+                      <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
+                        <p className="text-xs font-semibold text-gray-700 mb-1">Next Plan</p>
+                        <p className="text-gray-600 text-xs">{r.next_plan_text}</p>
                       </div>
                     )}
                   </div>
@@ -485,60 +482,59 @@ export default function ReportsClient() {
           {reportType === 'tiktok' && reportData.tiktok && (
             <>
               {reportData.tiktok.length === 0 ? (
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
-                  <p className="text-slate-500">Tidak ada data TikTok untuk periode ini</p>
+                <div className="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-sm">
+                  <p className="text-gray-400 text-sm">Tidak ada data TikTok untuk periode ini.</p>
                 </div>
               ) : (
                 <>
-                  {/* TikTok Summary */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                      <p className="text-slate-400 text-xs uppercase tracking-wider">Total Budget</p>
-                      <p className="text-xl font-bold text-white mt-1">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5">
+                    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                      <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">Total Budget</p>
+                      <p className="text-xl font-bold font-mono text-gray-900 mt-1">
                         Rp{formatNumber(reportData.tiktok.reduce((s, r) => s + r.budget_estimated, 0))}
                       </p>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                      <p className="text-slate-400 text-xs uppercase tracking-wider">Total Spend</p>
-                      <p className="text-xl font-bold text-amber-400 mt-1">
+                    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                      <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">Total Spend</p>
+                      <p className="text-xl font-bold font-mono text-amber-600 mt-1">
                         Rp{formatNumber(reportData.tiktok.reduce((s, r) => s + r.actual_spend, 0))}
                       </p>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                      <p className="text-slate-400 text-xs uppercase tracking-wider">Campaigns</p>
-                      <p className="text-xl font-bold text-blue-400 mt-1">{reportData.tiktok.length}</p>
+                    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                      <p className="text-gray-400 text-xs uppercase tracking-wider font-medium">Campaigns</p>
+                      <p className="text-xl font-bold font-mono text-blue-600 mt-1">{reportData.tiktok.length}</p>
                     </div>
                   </div>
 
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                    <h3 className="text-md font-semibold text-white mb-4">Detail Data</h3>
+                  <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Detail Data Kampanye</h3>
                     <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
+                      <table className="w-full text-xs">
                         <thead>
-                          <tr className="border-b border-slate-800">
-                            <th className="text-left text-xs text-slate-400 uppercase px-3 py-2">Date</th>
-                            <th className="text-left text-xs text-slate-400 uppercase px-3 py-2">Objective</th>
-                            <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">Budget</th>
-                            <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">Spend</th>
-                            <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">KPI 1</th>
-                            <th className="text-right text-xs text-slate-400 uppercase px-3 py-2">KPI 2</th>
-                            <th className="text-center text-xs text-slate-400 uppercase px-3 py-2">Status</th>
+                          <tr className="border-b border-gray-200 bg-gray-50 text-gray-500 uppercase tracking-wider text-[10px]">
+                            <th className="text-left px-3 py-2.5">Date</th>
+                            <th className="text-left px-3 py-2.5">Objective</th>
+                            <th className="text-right px-3 py-2.5">Budget</th>
+                            <th className="text-right px-3 py-2.5">Spend</th>
+                            <th className="text-right px-3 py-2.5">KPI 1</th>
+                            <th className="text-right px-3 py-2.5">KPI 2</th>
+                            <th className="text-center px-3 py-2.5">Status</th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-gray-100">
                           {reportData.tiktok.map((r, i) => (
-                            <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/30">
-                              <td className="px-3 py-2 text-white">{r.date}</td>
-                              <td className="px-3 py-2 text-slate-300 capitalize">{r.objective.replace('_', ' ')}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">Rp{formatNumber(r.budget_estimated)}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">Rp{formatNumber(r.actual_spend)}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">{r.kpi_1_label}: {r.kpi_1_value?.toFixed(2) || '-'}</td>
-                              <td className="px-3 py-2 text-right text-slate-300">{r.kpi_2_label}: {r.kpi_2_value ? formatNumber(r.kpi_2_value) : '-'}</td>
+                            <tr key={i} className="hover:bg-gray-50/80 transition-colors">
+                              <td className="px-3 py-2 font-mono text-gray-800">{r.date}</td>
+                              <td className="px-3 py-2 text-gray-600 capitalize">{r.objective.replace('_', ' ')}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">Rp{formatNumber(r.budget_estimated)}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">Rp{formatNumber(r.actual_spend)}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">{r.kpi_1_label}: {r.kpi_1_value?.toFixed(2) || '-'}</td>
+                              <td className="px-3 py-2 text-right font-mono text-gray-700">{r.kpi_2_label}: {r.kpi_2_value ? formatNumber(r.kpi_2_value) : '-'}</td>
                               <td className="px-3 py-2 text-center">
-                                <span className={`text-xs px-2 py-0.5 rounded-full ${
-                                  r.status === 'done' ? 'bg-green-500/10 text-green-400' :
-                                  r.status === 'ongoing' ? 'bg-blue-500/10 text-blue-400' :
-                                  'bg-gray-500/10 text-gray-400'
+                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium border ${
+                                  r.status === 'done' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                  r.status === 'ongoing' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                  'bg-gray-100 text-gray-600 border-gray-200'
                                 }`}>{r.status}</span>
                               </td>
                             </tr>
