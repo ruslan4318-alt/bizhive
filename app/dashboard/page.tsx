@@ -22,11 +22,19 @@ export default async function DashboardOverviewPage() {
     .select('*', { count: 'exact', head: true })
     .eq('is_active', true);
 
+  // Fetch brands list
+  const { data: brandsList } = await supabase
+    .from('brands')
+    .select('id, name')
+    .eq('is_active', true)
+    .order('name');
+
   return (
     <DashboardOverviewClient
       user={user}
       projects={projects || []}
       brandsCount={brandsCount || 0}
+      brandsList={brandsList || []}
     />
   );
 }

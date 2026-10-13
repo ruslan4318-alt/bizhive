@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Icons } from '@/components/ui/Icons';
 import type { DashboardUser } from '@/lib/types/dashboard';
 
-interface Brand {
+interface BrandItem {
   id: string;
   name: string;
 }
@@ -21,15 +21,30 @@ interface Project {
   status: string;
   deadline?: string | null;
   notes?: string | null;
-  brand?: Brand | null;
+  brand?: { id: string; name: string } | null;
   divisions?: ProjectDivision[];
   service_type?: string;
+}
+
+interface StoreAccount {
+  id: string;
+  brand: string;
+  service: 'shop_opt' | 'live_streaming' | 'content' | 'kol';
+  platform: 'shopee' | 'tiktok' | 'tokopedia' | 'lazada';
+  pic: string;
+  spend: number;
+  gmv: number;
+  targetRoas: number;
+  actualRoas: number;
+  health: 'optimal' | 'stable' | 'needs_review';
+  note: string;
 }
 
 interface DashboardOverviewClientProps {
   user: DashboardUser;
   projects: Project[];
   brandsCount: number;
+  brandsList?: BrandItem[];
 }
 
 type ServiceKey = 'all' | 'shop_opt' | 'live_streaming' | 'content' | 'kol';
@@ -40,6 +55,100 @@ const SERVICES_LIST: { key: ServiceKey; label: string; badge: string }[] = [
   { key: 'live_streaming', label: 'Live Streaming', badge: 'Tiktok / Shopee' },
   { key: 'content', label: 'Content Production', badge: 'Creative' },
   { key: 'kol', label: 'KOL & Affiliate', badge: 'Network' },
+];
+
+const STORE_ACCOUNTS_DATA: StoreAccount[] = [
+  {
+    id: 'st-1',
+    brand: 'Somethinc Official',
+    service: 'shop_opt',
+    platform: 'shopee',
+    pic: 'Fikri Haikal',
+    spend: 48500000,
+    gmv: 271600000,
+    targetRoas: 5.0,
+    actualRoas: 5.6,
+    health: 'optimal',
+    note: 'Winning ads SKU serum 20ml stabil di peringkat 1 kata kunci utama',
+  },
+  {
+    id: 'st-2',
+    brand: 'Buttonscarves Beauty',
+    service: 'shop_opt',
+    platform: 'tiktok',
+    pic: 'Fikri Haikal',
+    spend: 31200000,
+    gmv: 180960000,
+    targetRoas: 5.5,
+    actualRoas: 5.8,
+    health: 'optimal',
+    note: 'Video hook problem-solution menghasilkan konversi tinggi di showcase',
+  },
+  {
+    id: 'st-3',
+    brand: 'Cosmax Store',
+    service: 'shop_opt',
+    platform: 'tokopedia',
+    pic: 'Fikri Haikal',
+    spend: 14800000,
+    gmv: 69560000,
+    targetRoas: 4.5,
+    actualRoas: 4.7,
+    health: 'stable',
+    note: 'Porsi campaign Waktu Indonesia Belanja (WIB) menyumbang 42% GMV',
+  },
+  {
+    id: 'st-4',
+    brand: 'Somethinc Official',
+    service: 'live_streaming',
+    platform: 'shopee',
+    pic: 'Rian Pratama',
+    spend: 21400000,
+    gmv: 89880000,
+    targetRoas: 4.0,
+    actualRoas: 4.2,
+    health: 'optimal',
+    note: 'Shift malam (20:00-24:00) mencatat peak concurrent viewer 1.8k',
+  },
+  {
+    id: 'st-5',
+    brand: 'Buttonscarves Beauty',
+    service: 'live_streaming',
+    platform: 'tiktok',
+    pic: 'Rian Pratama',
+    spend: 16800000,
+    gmv: 55280000,
+    targetRoas: 3.5,
+    actualRoas: 3.29,
+    health: 'needs_review',
+    note: 'Host shift siang interaksi rendah, perlu evaluasi retention hook 30 detik pertama',
+  },
+  {
+    id: 'st-6',
+    brand: 'Somethinc Official',
+    service: 'content',
+    platform: 'tiktok',
+    pic: 'Nadia Rahma',
+    spend: 8500000,
+    gmv: 26350000,
+    targetRoas: 3.0,
+    actualRoas: 3.1,
+    health: 'stable',
+    note: '12 video kreatif tayang bulan ini, 3 video menjadi winning creative ads',
+  },
+  {
+    id: 'st-7',
+    brand: 'Cosmax Store',
+    service: 'kol',
+    platform: 'tiktok',
+    pic: 'Sarah Putri',
+    spend: 9800000,
+    gmv: 30380000,
+    targetRoas: 3.0,
+    actualRoas: 3.1,
+    health: 'stable',
+    note: '25 sample produk terkirim, 18 affiliate creators mulai upload video endorsement',
+  },
 ];
 
 // Mock monthly trend data points for chart
@@ -91,14 +200,6 @@ const TREND_DATA: Record<ServiceKey, { day: string; spend: number; gmv: number; 
   ],
 };
 
-const SERVICE_STATS = {
-  all: { spend: 184500000, gmv: 892400000, roas: 4.83, targetRoas: 4.0, targetAchieved: '120.7%' },
-  shop_opt: { spend: 122400000, gmv: 673200000, roas: 5.5, targetRoas: 4.5, targetAchieved: '122.2%' },
-  live_streaming: { spend: 38200000, gmv: 145160000, roas: 3.8, targetRoas: 3.5, targetAchieved: '108.5%' },
-  content: { spend: 14100000, gmv: 43710000, roas: 3.1, targetRoas: 2.8, targetAchieved: '110.7%' },
-  kol: { spend: 9800000, gmv: 30330000, roas: 3.09, targetRoas: 3.0, targetAchieved: '103.0%' },
-};
-
 function formatRupiah(num: number): string {
   return 'Rp' + num.toLocaleString('id-ID');
 }
@@ -107,11 +208,42 @@ export default function DashboardOverviewClient({
   user,
   projects,
   brandsCount,
+  brandsList = [
+    { id: 'b1', name: 'Somethinc Official' },
+    { id: 'b2', name: 'Buttonscarves Beauty' },
+    { id: 'b3', name: 'Cosmax Store' },
+  ],
 }: DashboardOverviewClientProps) {
   const [selectedService, setSelectedService] = useState<ServiceKey>('all');
+  const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const stats = SERVICE_STATS[selectedService];
+  // Filter store accounts based on selectedService and selectedBrand
+  const filteredStores = useMemo(() => {
+    return STORE_ACCOUNTS_DATA.filter((st) => {
+      if (selectedService !== 'all' && st.service !== selectedService) return false;
+      if (selectedBrand !== 'all' && st.brand !== selectedBrand) return false;
+      return true;
+    });
+  }, [selectedService, selectedBrand]);
+
+  // Aggregate stats from filtered stores
+  const stats = useMemo(() => {
+    const totalSpend = filteredStores.reduce((acc, s) => acc + s.spend, 0);
+    const totalGmv = filteredStores.reduce((acc, s) => acc + s.gmv, 0);
+    const roas = totalSpend > 0 ? totalGmv / totalSpend : 0;
+    const targetRoas = selectedService === 'shop_opt' ? 4.5 : selectedService === 'live_streaming' ? 3.5 : 4.0;
+    const achievedRatio = targetRoas > 0 ? (roas / targetRoas) * 100 : 100;
+
+    return {
+      spend: totalSpend > 0 ? totalSpend : 184500000,
+      gmv: totalGmv > 0 ? totalGmv : 892400000,
+      roas: roas > 0 ? roas : 4.83,
+      targetRoas,
+      targetAchieved: `${achievedRatio.toFixed(1)}%`,
+    };
+  }, [filteredStores, selectedService]);
+
   const trend = TREND_DATA[selectedService];
 
   // Projects status counters
@@ -162,7 +294,6 @@ export default function DashboardOverviewClient({
       });
     });
 
-    // Provide baseline PIC team data if DB projects haven't been assigned yet
     if (Object.keys(map).length === 0) {
       return [
         { name: 'Fikri Haikal', count: 6, divisions: ['Ads Specialist', 'Shop Opt'] },
@@ -226,17 +357,17 @@ export default function DashboardOverviewClient({
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* ─── Top Header & Service Filter ─── */}
+      {/* ─── Top Header & Action Buttons ─── */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-2 border-b border-slate-800/60">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
               Operasional Hub
             </span>
-            <span className="text-slate-500 text-xs">Periode: Oktober 2026</span>
+            <span className="text-slate-500 text-xs">Monitoring Periode: Oktober 2026</span>
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">
-            Selamat datang, <span className="text-amber-400">{user.full_name}</span>
+            Dashboard Overview
           </h1>
         </div>
 
@@ -246,7 +377,7 @@ export default function DashboardOverviewClient({
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-colors shadow-sm"
           >
             <Icons.Plus size={14} />
-            <span>Project Baru</span>
+            <span>Tambah Task</span>
           </Link>
           <Link
             href="/dashboard/reports"
@@ -258,36 +389,59 @@ export default function DashboardOverviewClient({
         </div>
       </div>
 
-      {/* ─── Service Filter Switcher (Sub-menu tabs) ─── */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-        {SERVICES_LIST.map((srv) => {
-          const active = selectedService === srv.key;
-          return (
-            <button
-              key={srv.key}
-              onClick={() => {
-                setSelectedService(srv.key);
-                setHoveredIndex(null);
-              }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${
-                active
-                  ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-sm font-semibold'
-                  : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800/50'
-              }`}
-            >
-              <span>{srv.label}</span>
-              <span
-                className={`text-[9px] px-1.5 py-0.2 rounded ${
+      {/* ─── Dual Filter: Service Area Tabs + Brand Dropdown ─── */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-[#0D131F] border border-slate-800 p-3 rounded-xl">
+        {/* Left: Service Area Switcher Tabs */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+          {SERVICES_LIST.map((srv) => {
+            const active = selectedService === srv.key;
+            return (
+              <button
+                key={srv.key}
+                onClick={() => {
+                  setSelectedService(srv.key);
+                  setHoveredIndex(null);
+                }}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${
                   active
-                    ? 'bg-amber-500/20 text-amber-300'
-                    : 'bg-slate-800 text-slate-500'
+                    ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-sm font-semibold'
+                    : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800/50'
                 }`}
               >
-                {srv.badge}
-              </span>
-            </button>
-          );
-        })}
+                <span>{srv.label}</span>
+                <span
+                  className={`text-[9px] px-1.5 py-0.2 rounded ${
+                    active
+                      ? 'bg-amber-500/20 text-amber-300'
+                      : 'bg-slate-800 text-slate-500'
+                  }`}
+                >
+                  {srv.badge}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right: Brand Filter Dropdown */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-slate-400 text-xs font-medium flex items-center gap-1.5">
+            <Icons.Brands size={14} />
+            <span>Filter Brand:</span>
+          </span>
+          <select
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
+            className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/60 font-medium"
+          >
+            <option value="all">Semua Brand ({brandsCount || brandsList.length})</option>
+            {brandsList.map((b) => (
+              <option key={b.id} value={b.name}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* ─── Executive Performance KPI Cards ─── */}
@@ -303,7 +457,7 @@ export default function DashboardOverviewClient({
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-slate-400">
             <span className="text-emerald-400 font-medium">Bulan Berjalan</span>
             <span className="text-slate-600">·</span>
-            <span>{selectedService === 'all' ? '4 Servis Aktif' : SERVICES_LIST.find(s => s.key === selectedService)?.label}</span>
+            <span>{selectedBrand === 'all' ? 'Semua Brand' : selectedBrand}</span>
           </div>
         </div>
 
@@ -317,7 +471,7 @@ export default function DashboardOverviewClient({
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-slate-400">
             <span className="text-emerald-400 font-semibold">{stats.targetAchieved}</span>
-            <span>dari target bulanan</span>
+            <span>dari target periode</span>
           </div>
         </div>
 
@@ -341,15 +495,15 @@ export default function DashboardOverviewClient({
 
         <div className="bg-[#0D131F] border border-slate-800 rounded-xl p-4.5">
           <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
-            <span className="font-medium uppercase tracking-wider text-[11px]">Cakupan Klien</span>
+            <span className="font-medium uppercase tracking-wider text-[11px]">Akun Toko Terkelola</span>
             <Icons.Brands className="text-slate-500" size={14} />
           </div>
           <p className="text-2xl font-bold font-mono text-white tracking-tight">
-            {brandsCount || 18} <span className="text-xs font-normal text-slate-400">Brand</span>
+            {filteredStores.length} <span className="text-xs font-normal text-slate-400">Akun Toko</span>
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-slate-400">
             <span className="text-slate-300 font-mono">{projects.length || 24}</span>
-            <span>project operasional berjalan</span>
+            <span>task operasional aktif</span>
           </div>
         </div>
       </div>
@@ -361,7 +515,7 @@ export default function DashboardOverviewClient({
             <div className="flex items-center gap-2">
               <Icons.TrendUp className="text-amber-400" size={16} />
               <h2 className="text-sm font-semibold text-white tracking-tight">
-                Tren ROAS & Trajektori Performa ({SERVICES_LIST.find(s => s.key === selectedService)?.label})
+                Tren ROAS & Trajektori Performa ({selectedBrand === 'all' ? 'Semua Brand' : selectedBrand} · {SERVICES_LIST.find(s => s.key === selectedService)?.label})
               </h2>
             </div>
             <p className="text-slate-400 text-xs mt-0.5">
@@ -452,7 +606,6 @@ export default function DashboardOverviewClient({
                     onMouseEnter={() => setHoveredIndex(idx)}
                     onMouseLeave={() => setHoveredIndex(null)}
                   />
-                  {/* Day label */}
                   <text
                     x={pt.x}
                     y={svgHeight - 6}
@@ -468,7 +621,7 @@ export default function DashboardOverviewClient({
             })}
           </svg>
 
-          {/* Tooltip Card when hovering point */}
+          {/* Tooltip Card */}
           {hoveredIndex !== null && points[hoveredIndex] && (
             <div
               className="absolute pointer-events-none bg-slate-900 border border-slate-700 shadow-xl rounded-lg p-2.5 text-xs text-white z-10 font-mono transition-transform"
@@ -502,6 +655,102 @@ export default function DashboardOverviewClient({
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* ─── Store Performance Matrix (Matriks Akun Toko Klien) ─── */}
+      <div className="bg-[#0D131F] border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+          <div>
+            <div className="flex items-center gap-2">
+              <Icons.Projects size={16} className="text-amber-400" />
+              <h3 className="font-semibold text-white text-sm">Matriks Akun Toko & Performa Klien</h3>
+            </div>
+            <p className="text-slate-400 text-[11px] mt-0.5">
+              Rincian performa per platform, PIC, Spend, GMV, dan evaluasi kesehatan toko
+            </p>
+          </div>
+          <span className="text-slate-400 font-mono text-[11px] bg-slate-900 px-2 py-1 rounded border border-slate-800">
+            {filteredStores.length} Akun Toko Terpantau
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-950/80 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+              <tr>
+                <th className="px-4 py-3">Brand / Toko</th>
+                <th className="px-4 py-3">Platform</th>
+                <th className="px-4 py-3">Servis</th>
+                <th className="px-4 py-3">PIC</th>
+                <th className="px-4 py-3 text-right">Ad Spend</th>
+                <th className="px-4 py-3 text-right">Direct GMV</th>
+                <th className="px-4 py-3 text-center">ROAS (Target)</th>
+                <th className="px-4 py-3 text-center">Status</th>
+                <th className="px-4 py-3">Catatan Evaluasi PIC</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/60">
+              {filteredStores.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="px-4 py-8 text-center text-slate-500">
+                    Tidak ada akun toko untuk filter brand / servis yang dipilih.
+                  </td>
+                </tr>
+              ) : (
+                filteredStores.map((st) => (
+                  <tr key={st.id} className="hover:bg-slate-800/30 transition-colors">
+                    <td className="px-4 py-3 font-semibold text-white whitespace-nowrap">
+                      {st.brand}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-slate-700 bg-slate-900 text-slate-300 uppercase">
+                        {st.platform}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className="text-[10px] text-slate-400 capitalize">
+                        {st.service.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-slate-300 whitespace-nowrap">
+                      {st.pic}
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono text-slate-300 whitespace-nowrap">
+                      {formatRupiah(st.spend)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono font-medium text-emerald-400 whitespace-nowrap">
+                      {formatRupiah(st.gmv)}
+                    </td>
+                    <td className="px-4 py-3 text-center font-mono whitespace-nowrap">
+                      <span className="font-semibold text-amber-400">{st.actualRoas}x</span>
+                      <span className="text-[10px] text-slate-500 ml-1">({st.targetRoas}x)</span>
+                    </td>
+                    <td className="px-4 py-3 text-center whitespace-nowrap">
+                      {st.health === 'optimal' && (
+                        <span className="text-[10px] px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 font-medium">
+                          Optimal
+                        </span>
+                      )}
+                      {st.health === 'stable' && (
+                        <span className="text-[10px] px-2 py-0.5 rounded border border-slate-600 bg-slate-800 text-slate-300 font-medium">
+                          Stabil
+                        </span>
+                      )}
+                      {st.health === 'needs_review' && (
+                        <span className="text-[10px] px-2 py-0.5 rounded border border-red-500/30 bg-red-500/10 text-red-400 font-medium">
+                          Evaluasi
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-slate-400 max-w-xs truncate" title={st.note}>
+                      {st.note}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

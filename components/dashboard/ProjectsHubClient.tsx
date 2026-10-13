@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react';
 import { Icons } from '@/components/ui/Icons';
 import type { DashboardUser } from '@/lib/types/dashboard';
 import { isManagerOrAbove } from '@/lib/types/dashboard';
-import ShopOptimizationAnalytics from '@/components/dashboard/ShopOptimizationAnalytics';
 
 export type ServiceType = 'shop_opt' | 'live_streaming' | 'content' | 'kol';
 export type TaskPriority = 'low' | 'normal' | 'high' | 'urgent';
@@ -140,7 +139,6 @@ const DEFAULT_TASKS: TaskItem[] = [
   },
 ];
 
-type MainTab = 'tasks_table' | 'shop_opt_analytics';
 type FilterTab = 'all' | 'my_tasks' | 'created_by_me';
 
 export default function ProjectsHubClient({
@@ -153,7 +151,6 @@ export default function ProjectsHubClient({
   ],
 }: ProjectsHubClientProps) {
   const [tasks, setTasks] = useState<TaskItem[]>(initialTasks && initialTasks.length > 0 ? initialTasks : DEFAULT_TASKS);
-  const [activeMainTab, setActiveMainTab] = useState<MainTab>('tasks_table');
   const [activeFilterTab, setActiveFilterTab] = useState<FilterTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedService, setSelectedService] = useState<string>('all');
@@ -268,7 +265,7 @@ export default function ProjectsHubClient({
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* ─── Top Header & Mode Switcher ─── */}
+      {/* ─── Top Header ─── */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-2 border-b border-slate-800/80">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -279,37 +276,11 @@ export default function ProjectsHubClient({
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Projects & Tasks</h1>
           <p className="text-slate-400 text-xs mt-0.5">
-            Kelola pembagian tugas tim, monitor PIC, deadline, dan analisa grafik performa toko
+            Kelola pembagian tugas operasional tim, monitor PIC, deadline, dan alur pengerjaan
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Main Tab Toggle */}
-          <div className="bg-slate-900 border border-slate-800 rounded-lg p-1 flex items-center gap-1">
-            <button
-              onClick={() => setActiveMainTab('tasks_table')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                activeMainTab === 'tasks_table'
-                  ? 'bg-amber-500/15 text-amber-300 font-semibold border border-amber-500/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Icons.Projects size={14} />
-              <span>Tabel Pekerjaan</span>
-            </button>
-            <button
-              onClick={() => setActiveMainTab('shop_opt_analytics')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                activeMainTab === 'shop_opt_analytics'
-                  ? 'bg-amber-500/15 text-amber-300 font-semibold border border-amber-500/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Icons.TrendUp size={14} />
-              <span>Shop Opt Analytics</span>
-            </button>
-          </div>
-
           <button
             onClick={() => setShowCreateModal(true)}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-colors shadow-sm"
@@ -320,25 +291,8 @@ export default function ProjectsHubClient({
         </div>
       </div>
 
-      {/* ─── Mode 1: Shop Optimization Analytics ─── */}
-      {activeMainTab === 'shop_opt_analytics' ? (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 rounded-lg bg-slate-900/60 border border-slate-800 text-xs">
-            <span className="text-slate-300">
-              Menampilkan grafik interaktif kurva ROAS, target threshold, GMV share, dan store health matrix.
-            </span>
-            <button
-              onClick={() => setActiveMainTab('tasks_table')}
-              className="text-amber-400 hover:text-amber-300 font-medium"
-            >
-              Kembali ke Tabel Pekerjaan →
-            </button>
-          </div>
-          <ShopOptimizationAnalytics />
-        </div>
-      ) : (
-        /* ─── Mode 2: Tasks Table & Management ─── */
-        <div className="space-y-4">
+      {/* ─── Tasks Table & Operational Management ─── */}
+      <div className="space-y-4">
           {/* Sub-tab Navigation */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-[#0D131F] border border-slate-800 p-3 rounded-xl">
             {/* Left: View Filter Tabs */}
@@ -583,7 +537,6 @@ export default function ProjectsHubClient({
             </div>
           </div>
         </div>
-      )}
 
       {/* ─── Modal Tambah Pekerjaan / Task ─── */}
       {showCreateModal && (
